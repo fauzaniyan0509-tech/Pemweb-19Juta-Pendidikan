@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Detail Tempat — Perpustakaan Bank Indonesia Solo | 19JutaPendidikan</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+  <link rel="stylesheet" href="detailTempat.css">
+</head>
+
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar navbar-expand-lg py-3 sticky-top">
+    <div class="container">
+      <a class="logo-teks" href="beranda.html">19JutaPendidikan</a>
+
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+        <ul class="navbar-nav align-items-center gap-lg-4">
+          <li class="nav-item"><a class="nav-link" href="beranda.html">Home</a></li>
+          <li class="nav-item"><a class="nav-link aktif" href="halamanTempatEdukatif.html">Peta Edukasi</a></li>
+          <li class="nav-item ms-lg-2">
+            <a href="ProfilPengguna.html">
+              <img src="foto-profil-user.jpg" alt="Profil" class="foto-profil-nav"
+                onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
+              <div style="display:none; width:40px; height:40px; border-radius:50%;
+                background:linear-gradient(90deg,#2f6df6,#35c7b6);
+                align-items:center; justify-content:center; color:white; font-weight:700; font-size:16px;">U</div>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- KONTEN UTAMA -->
+  <!-- Data bersumber dari tabel: tempat_edukatif -->
+  <!-- id_tempat: 6 | nama_tempat_edukatif: Perpustakaan Bank Indonesia Solo -->
+  <div class="container py-5">
+
+    <!-- BREADCRUMB -->
+    <nav aria-label="breadcrumb" class="mb-4">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="beranda.html">Beranda</a></li>
+        <li class="breadcrumb-item"><a href="halamanTempatEdukatif.html">Peta Edukasi</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Detail Tempat</li>
+      </ol>
+    </nav>
+
+    <div class="row g-5">
+
+      <!-- KOLOM KIRI: KONTEN DETAIL -->
+      <div class="col-lg-8">
+
+        <!-- Gambar utama -->
+        <img src="perpustakaanBI.jpeg" alt="Perpustakaan Bank Indonesia Solo" class="gambar-utama">
+
+        <!-- nama_tempat_edukatif -->
+        <h1 class="nama-tempat">Perpustakaan Bank Indonesia Solo</h1>
+        <p class="subjudul-tempat">
+          Perpustakaan modern milik Kantor Perwakilan Bank Indonesia Solo — ruang belajar nyaman,
+          koleksi lengkap tentang ekonomi & keuangan, dan terbuka gratis untuk masyarakat umum.
+        </p>
+
+        <!-- DESKRIPSI -->
+        <h4 class="kepala-seksi">Tentang Tempat Ini</h4>
+        <p class="teks-deskripsi">
+          Perpustakaan Bank Indonesia Solo merupakan salah satu fasilitas publik yang disediakan oleh
+          Kantor Perwakilan Bank Indonesia Wilayah Solo. Dengan desain interior modern dan elegan,
+          perpustakaan ini menjadi tempat favorit mahasiswa, pelajar, dan masyarakat umum untuk membaca,
+          belajar, dan meneliti topik-topik seputar ekonomi, perbankan, keuangan, dan literasi bisnis.
+        </p>
+        <p class="teks-deskripsi">
+          Koleksi buku yang tersedia mencakup ribuan judul mulai dari ekonomi makro, kebijakan moneter,
+          perbankan syariah, investasi, hingga buku-buku populer pengembangan diri. Seluruh layanan
+          perpustakaan ini <strong>gratis</strong> dan tidak memerlukan kartu anggota khusus untuk
+          mengakses ruang baca.
+        </p>
+
+        <!-- PRASARANA -->
+        <h4 class="kepala-seksi">prasarana</h4>
+        <div class="grid-prasarana">
+          <div class="kartu-prasarana">
+            WiFi Gratis
+          </div>
+          <div class="kartu-prasarana">
+            AC
+          </div>
+          <div class="kartu-prasarana">
+            Ruang Baca
+          </div>
+          <div class="kartu-prasarana">
+            Komputer Publik
+          </div>
+          <div class="kartu-prasarana">
+            Zona Tenang
+          </div>
+          <div class="kartu-prasarana">
+            Akses Difabel
+          </div>
+          <div class="kartu-prasarana">
+            Toilet Bersih
+          </div>
+          <div class="kartu-prasarana">
+            Parkir Tersedia
+          </div>
+        </div>
+
+        <!-- RATING -->
+        <h4 class="kepala-seksi">rating</h4>
+        <div class="kotak-rating">
+          <div class="angka-rating">4.7</div>
+          <div>
+            <div class="bintang-rating">★★★★★</div>
+            <div style="font-size:14px; font-weight:700; color:#92400e;">Sangat Direkomendasikan</div>
+            <div class="jumlah-ulasan">Berdasarkan 320+ ulasan pengunjung</div>
+          </div>
+        </div>
+
+        <!-- SOSIAL MEDIA -->
+        <h4 class="kepala-seksi">sosial_media</h4>
+        <div class="daftar-sosmed">
+          <a href="https://www.instagram.com/bi_solo" target="_blank" class="tombol-sosmed instagram">
+            <i class="bi bi-instagram"></i> @bi_solo
+          </a>
+          <a href="https://www.facebook.com/kpwbisoloraya" target="_blank" class="tombol-sosmed facebook">
+            <i class="bi bi-facebook"></i> KPw BI Solo
+          </a>
+          <a href="https://www.bi.go.id" target="_blank" class="tombol-sosmed">
+            <i class="bi bi-globe2"></i> bi.go.id
+          </a>
+        </div>
+
+        <!-- PETA — alamat_maps (embedded Google Maps) -->
+        <h4 class="kepala-seksi">alamat_maps</h4>
+        <div class="kotak-peta">
+          <iframe
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3955.453019248!2d110.82634!3d-7.56738!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e7a168351fa6667%3A0x5a5b61e419b8ca8e!2sBank%20Indonesia%20Solo!5e0!3m2!1sid!2sid!4v1716000000000"
+            allowfullscreen=""
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"
+            title="Lokasi Perpustakaan Bank Indonesia Solo">
+          </iframe>
+        </div>
+        <p style="font-size:13px; color:#6b7280; margin-top:10px;">
+          <i class="bi bi-geo-alt-fill me-1" style="color:#2f6df6;"></i>
+          Jl. Brigjen Slamet Riyadi No.275, Sriwedari, Kec. Laweyan, Kota Surakarta, Jawa Tengah 57141
+        </p>
+
+      </div>
+
+      <!-- KOLOM KANAN: SIDEBAR INFORMASI -->
+      <div class="col-lg-4">
+        <div class="kartu-sidebar">
+          <h5 class="judul-sidebar">Informasi Tempat</h5>
+
+          <!-- nama_tempat_edukatif -->
+          <p class="label-info">nama_tempat_edukatif</p>
+          <p class="nilai-info">Perpustakaan Bank Indonesia Solo</p>
+
+          <!-- kategori -->
+          <p class="label-info">kategori</p>
+          <p class="nilai-info"><span class="badge-kategori">📚 Perpustakaan</span></p>
+
+          <!-- rating (ringkas) -->
+          <p class="label-info">rating</p>
+          <div class="mini-rating">
+            <span class="angka">4.7</span>
+            <span class="bintang">★★★★★</span>
+            <span class="ulasan">(320+ ulasan)</span>
+          </div>
+
+          <!-- jam_operasional -->
+          <div class="kotak-jam">
+            <p class="label-jam">jam_operasional</p>
+            <div class="baris-jam">
+              <span>Senin — Jumat</span>
+              <span>09.00 – 16.00 WIB</span>
+            </div>
+            <div class="baris-jam">
+              <span>Sabtu</span>
+              <span>09.00 – 13.00 WIB</span>
+            </div>
+            <div class="baris-jam">
+              <span>Minggu & Hari Libur</span>
+              <span>Tutup</span>
+            </div>
+          </div>
+
+          <!-- alamat_maps — tombol buka Google Maps -->
+          <p class="label-info" style="margin-bottom:8px;">alamat_maps</p>
+          <a href="https://maps.app.goo.gl/BankIndonesiaSolo"
+             target="_blank"
+             class="tombol-maps">
+            <i class="bi bi-geo-alt-fill"></i> Buka di Google Maps
+          </a>
+
+          <hr class="pemisah">
+
+          <!-- prasarana ringkas -->
+          <p class="label-info">prasarana</p>
+          <p class="nilai-info" style="font-size:14px; line-height:1.8;">
+            WiFi · AC · Ruang Baca · Komputer · Zona Tenang · Parkir · Toilet · Akses Difabel
+          </p>
+
+          <!-- sosial_media ringkas -->
+          <p class="label-info">sosial_media</p>
+          <div style="display:flex; flex-direction:column; gap:8px; margin-bottom:18px;">
+            <a href="https://www.instagram.com/bi_solo" target="_blank"
+              style="font-size:13px; font-weight:700; color:#e1306c; text-decoration:none;">
+              <i class="bi bi-instagram me-1"></i> @bi_solo
+            </a>
+            <a href="https://www.bi.go.id" target="_blank"
+              style="font-size:13px; font-weight:700; color:#2f6df6; text-decoration:none;">
+              <i class="bi bi-globe2 me-1"></i> www.bi.go.id
+            </a>
+          </div>
+
+          <hr class="pemisah">
+
+          <!-- Bagikan -->
+          <p class="teks-bagikan">Bagikan tempat ini:</p>
+          <div class="baris-bagikan">
+            <a href="https://wa.me/?text=Kunjungi%20Perpustakaan%20Bank%20Indonesia%20Solo!"
+               target="_blank" class="ikon-sosmed" title="WhatsApp">
+              <i class="bi bi-whatsapp"></i>
+            </a>
+            <a href="#" class="ikon-sosmed" title="Instagram">
+              <i class="bi bi-instagram"></i>
+            </a>
+            <a href="#" class="ikon-sosmed" title="Salin Link" onclick="salinLink(event)">
+              <i class="bi bi-link-45deg"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    function salinLink(e) {
+      e.preventDefault();
+      navigator.clipboard.writeText(window.location.href).then(() => {
+        alert('Link berhasil disalin!');
+      });
+    }
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

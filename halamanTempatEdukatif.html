@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tempat Edukatif - 19JutaPendidikan</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="tempatEdukatif.css">
+</head>
+
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar navbar-expand-lg py-3">
+    <div class="container">
+      <a class="logo-teks" href="#">19JutaPendidikan</a>
+
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+        <ul class="navbar-nav align-items-center gap-lg-4">
+          <li class="nav-item"><a class="nav-link" href="#">Beranda</a></li>
+          <li class="nav-item"><a class="nav-link" href="#">Lomba</a></li>
+          <li class="nav-item"><a class="nav-link" href="#">Beasiswa</a></li>
+          <li class="nav-item"><a class="nav-link aktif" href="#">Peta Edukasi</a></li>
+          <li class="nav-item"><a class="tombol-gradient" href="#">Publikasi Lomba</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO & PENCARIAN -->
+  <section class="py-5 text-center">
+    <div class="container">
+      <h1 class="judul-hero">Jelajahi Tempat Edukatif</h1>
+      <p class="subjudul-hero">
+        Temukan perpustakaan, ruang belajar, dan tempat inspiratif di Solo dan sekitarnya untuk mendukung perjalanan belajarmu.
+      </p>
+
+      <div class="kotak-pencarian">
+        <input type="text" id="pencarianHero" placeholder="Cari nama tempat, kategori, atau lokasi...">
+        <button onclick="filterTempat()">Cari Tempat</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- KONTEN UTAMA -->
+  <main class="container pb-5">
+    <div class="row g-4">
+
+      <!-- PANEL FILTER -->
+      <div class="col-lg-3">
+        <div class="kartu panel-filter">
+          <h3 class="judul-filter">Filter Tempat</h3>
+
+          <div class="mb-4">
+            <label>Cari Nama Tempat</label>
+            <input type="text" class="input-filter" id="pencarianSamping" placeholder="Contoh: Perpustakaan">
+          </div>
+
+          <div class="mb-4">
+            <label>Kategori Tempat</label>
+            <select class="select-filter" id="filterKategori">
+              <option value="semua">Semua Kategori</option>
+              <option value="perpustakaan">Perpustakaan</option>
+              <option value="kafe-belajar">Kafe Belajar</option>
+              <option value="teknologi">Teknologi & Inovasi</option>
+              <option value="museum">Museum & Sejarah</option>
+              <option value="ruang-kreatif">Ruang Kreatif</option>
+            </select>
+          </div>
+
+          <div class="mb-4">
+            <label>Biaya Masuk</label>
+            <div class="pilihan-radio">
+              <input type="radio" name="biaya" value="semua" checked>
+              <span>Semua</span>
+            </div>
+            <div class="pilihan-radio">
+              <input type="radio" name="biaya" value="gratis">
+              <span>Gratis</span>
+            </div>
+            <div class="pilihan-radio">
+              <input type="radio" name="biaya" value="berbayar">
+              <span>Berbayar</span>
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label>Fasilitas</label>
+            <div class="pilihan-radio">
+              <input type="radio" name="fasilitas" value="semua" checked>
+              <span>Semua</span>
+            </div>
+            <div class="pilihan-radio">
+              <input type="radio" name="fasilitas" value="wifi">
+              <span>WiFi Tersedia</span>
+            </div>
+            <div class="pilihan-radio">
+              <input type="radio" name="fasilitas" value="coworking">
+              <span>Coworking Space</span>
+            </div>
+          </div>
+
+          <button class="tombol-filter" onclick="filterTempat()">Terapkan Filter</button>
+          <button class="tombol-reset" onclick="resetFilter()">Reset Filter</button>
+        </div>
+      </div>
+
+      <!-- GRID TEMPAT -->
+      <div class="col-lg-9">
+        <div class="judul-section">
+          <div>
+            <h2>Daftar Tempat Edukatif</h2>
+            <p class="teks-jumlah mb-0" id="teksJumlah">Menampilkan 6 tempat</p>
+          </div>
+        </div>
+
+        <div class="row g-4" id="gridTempat">
+
+          <!-- KARTU 1: Perpustakaan Pusat UNS -->
+          <div class="col-md-6 item-tempat"
+            data-nama="perpustakaan pusat uns universitas sebelas maret surakarta"
+            data-kategori="perpustakaan"
+            data-biaya="gratis"
+            data-fasilitas="wifi">
+            <div class="kartu kartu-tempat">
+              <div class="wrapper-gambar">
+                <img src="perpusUNS.jpg" alt="Perpustakaan Pusat UNS" class="gambar-tempat">
+                <span class="label-kategori">📚 Perpustakaan</span>
+                <span class="label-status gratis">Gratis</span>
+              </div>
+              <div class="isi-kartu">
+                <h4 class="nama-tempat">Perpustakaan Pusat UNS</h4>
+                <p class="alamat-tempat">📍 Jl. Ir. Sutami No.36A, Kentingan, Surakarta</p>
+
+                <div class="baris-tag">
+                  <span class="tag">WiFi</span>
+                  <span class="tag">Koleksi Lengkap</span>
+                  <span class="tag">Ruang Baca</span>
+                  <span class="tag gratis">Gratis (Mahasiswa UNS)</span>
+                </div>
+
+                <div class="kotak-jam">🕐 Senin–Jumat: 08.00–21.00 | Sabtu: 08.00–15.00</div>
+
+                <p class="deskripsi-singkat">
+                  Perpustakaan pusat Universitas Sebelas Maret dengan koleksi lebih dari 400.000 judul buku dan jurnal ilmiah. Dilengkapi ruang baca nyaman, akses internet gratis, dan layanan penelusuran literatur digital.
+                </p>
+
+                <a href="#" class="tombol-detail">Lihat Detail & Peta</a>
+              </div>
+            </div>
+          </div>
+
+          <!-- KARTU 2: 18 Grounds -->
+          <div class="col-md-6 item-tempat"
+            data-nama="18 grounds eighteengrounds solo coworking kafe belajar"
+            data-kategori="kafe-belajar"
+            data-biaya="berbayar"
+            data-fasilitas="wifi coworking">
+            <div class="kartu kartu-tempat">
+              <div class="wrapper-gambar">
+                <img src="18grounds.jpg" alt="18 Grounds" class="gambar-tempat">
+                <span class="label-kategori">☕ Kafe Belajar</span>
+                <span class="label-status berbayar">Berbayar</span>
+              </div>
+              <div class="isi-kartu">
+                <h4 class="nama-tempat">18 Grounds</h4>
+                <p class="alamat-tempat">📍 Solo, Jawa Tengah</p>
+
+                <div class="baris-tag">
+                  <span class="tag">WiFi Cepat</span>
+                  <span class="tag">Coworking</span>
+                  <span class="tag">AC</span>
+                  <span class="tag">Outlet Listrik</span>
+                </div>
+
+                <div class="kotak-jam">🕐 Setiap Hari: 08.00–22.00</div>
+
+                <p class="deskripsi-singkat">
+                  Ruang kafe dan coworking modern dengan desain minimalis yang cocok untuk belajar, mengerjakan tugas, atau meeting kelompok. WiFi kencang dan banyak stop kontak tersedia di seluruh area.
+                </p>
+
+                <a href="#" class="tombol-detail">Lihat Detail & Peta</a>
+              </div>
+            </div>
+          </div>
+
+          <!-- KARTU 3: Almamater Coffee & Eatery -->
+          <div class="col-md-6 item-tempat"
+            data-nama="almamater coffee eatery kafe mahasiswa solo belajar"
+            data-kategori="kafe-belajar"
+            data-biaya="berbayar"
+            data-fasilitas="wifi">
+            <div class="kartu kartu-tempat">
+              <div class="wrapper-gambar">
+                <img src="almamatercafe.jpg" alt="Almamater Coffee & Eatery" class="gambar-tempat">
+                <span class="label-kategori">☕ Kafe Belajar</span>
+                <span class="label-status berbayar">Berbayar</span>
+              </div>
+              <div class="isi-kartu">
+                <h4 class="nama-tempat">Almamater Coffee & Eatery</h4>
+                <p class="alamat-tempat">📍 Solo, Jawa Tengah</p>
+
+                <div class="baris-tag">
+                  <span class="tag">WiFi</span>
+                  <span class="tag">Outdoor Area</span>
+                  <span class="tag">Pet Friendly</span>
+                  <span class="tag">Makanan & Minuman</span>
+                </div>
+
+                <div class="kotak-jam">🕐 Setiap Hari: 09.00–23.00</div>
+
+                <p class="deskripsi-singkat">
+                  Kafe dengan konsep industrial-hijau yang disukai mahasiswa. Area outdoor rindang sangat cocok untuk diskusi kelompok atau mengerjakan tugas sambil menikmati kopi dan makanan ringan.
+                </p>
+
+                <a href="#" class="tombol-detail">Lihat Detail & Peta</a>
+              </div>
+            </div>
+          </div>
+
+          <!-- KARTU 4: Solo Technopark -->
+          <div class="col-md-6 item-tempat"
+            data-nama="solo technopark teknologi inovasi gaming community hub kreatif"
+            data-kategori="teknologi"
+            data-biaya="gratis"
+            data-fasilitas="wifi coworking">
+            <div class="kartu kartu-tempat">
+              <div class="wrapper-gambar">
+                <img src="technopark.webp" alt="Solo Technopark" class="gambar-tempat">
+                <span class="label-kategori">💡 Teknologi & Inovasi</span>
+                <span class="label-status gratis">Gratis</span>
+              </div>
+              <div class="isi-kartu">
+                <h4 class="nama-tempat">Solo Technopark</h4>
+                <p class="alamat-tempat">📍 Jl. Ki Hajar Dewantara No.19, Kentingan, Surakarta</p>
+
+                <div class="baris-tag">
+                  <span class="tag">Gaming Hub</span>
+                  <span class="tag">Inovasi & Startup</span>
+                  <span class="tag">WiFi</span>
+                  <span class="tag">Workshop</span>
+                  <span class="tag gratis">Gratis</span>
+                </div>
+
+                <div class="kotak-jam">🕐 Senin–Jumat: 08.00–16.00</div>
+
+                <p class="deskripsi-singkat">
+                  Pusat teknologi dan inovasi kota Solo yang menyediakan fasilitas Gaming & Community Hub, Creative & Innovation Hub, serta program pelatihan teknologi untuk pelajar dan mahasiswa.
+                </p>
+
+                <a href="#" class="tombol-detail">Lihat Detail & Peta</a>
+              </div>
+            </div>
+          </div>
+
+          <!-- KARTU 5: Museum Pers Nasional -->
+          <div class="col-md-6 item-tempat"
+            data-nama="museum pers nasional solo sejarah jurnalistik media"
+            data-kategori="museum"
+            data-biaya="gratis"
+            data-fasilitas="wifi">
+            <div class="kartu kartu-tempat">
+              <div class="wrapper-gambar">
+                <img src="museumPers.jpg" alt="Museum Pers Nasional" class="gambar-tempat">
+                <span class="label-kategori">🏛️ Museum & Sejarah</span>
+                <span class="label-status gratis">Gratis</span>
+              </div>
+              <div class="isi-kartu">
+                <h4 class="nama-tempat">Museum Pers Nasional</h4>
+                <p class="alamat-tempat">📍 Jl. Gajah Mada No.59, Timuran, Surakarta</p>
+
+                <div class="baris-tag">
+                  <span class="tag">Koleksi Sejarah</span>
+                  <span class="tag">Pers Indonesia</span>
+                  <span class="tag">Edukasi</span>
+                  <span class="tag gratis">Gratis</span>
+                </div>
+
+                <div class="kotak-jam">🕐 Selasa–Minggu: 08.00–16.00 (Senin tutup)</div>
+
+                <p class="deskripsi-singkat">
+                  Museum yang menyimpan sejarah panjang pers Indonesia sejak zaman kolonial hingga era digital. Tempat edukatif untuk memahami perkembangan jurnalisme dan kebebasan pers di Indonesia.
+                </p>
+
+                <a href="#" class="tombol-detail">Lihat Detail & Peta</a>
+              </div>
+            </div>
+          </div>
+
+          <!-- KARTU 6: Perpustakaan Bank Indonesia Solo -->
+          <div class="col-md-6 item-tempat"
+            data-nama="perpustakaan bank indonesia solo bi literasi keuangan ekonomi"
+            data-kategori="perpustakaan"
+            data-biaya="gratis"
+            data-fasilitas="wifi">
+            <div class="kartu kartu-tempat">
+              <div class="wrapper-gambar">
+                <img src="perpustakaanBI.jpeg" alt="Perpustakaan Bank Indonesia Solo" class="gambar-tempat">
+                <span class="label-kategori">📚 Perpustakaan</span>
+                <span class="label-status gratis">Gratis</span>
+              </div>
+              <div class="isi-kartu">
+                <h4 class="nama-tempat">Perpustakaan Bank Indonesia Solo</h4>
+                <p class="alamat-tempat">📍 Jl. Brigjen Slamet Riyadi No.275, Surakarta</p>
+
+                <div class="baris-tag">
+                  <span class="tag">Literasi Keuangan</span>
+                  <span class="tag">WiFi</span>
+                  <span class="tag">Koleksi Ekonomi</span>
+                  <span class="tag gratis">Gratis</span>
+                </div>
+
+                <div class="kotak-jam">🕐 Senin–Jumat: 09.00–16.00</div>
+
+                <p class="deskripsi-singkat">
+                  Perpustakaan modern milik Kantor Perwakilan Bank Indonesia Solo dengan desain interior yang elegan. Koleksi berfokus pada ekonomi, keuangan, dan literasi perbankan. Terbuka untuk umum dan sangat nyaman untuk belajar.
+                </p>
+
+                <a href="#" class="tombol-detail">Lihat Detail & Peta</a>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- EMPTY STATE -->
+        <div class="kondisi-kosong" id="kondisiKosong">
+          <div class="ikon-kosong">🔍</div>
+          <h5>Tempat tidak ditemukan</h5>
+          <p>Coba ubah kata kunci atau filter yang kamu gunakan.</p>
+        </div>
+
+        <!-- FOOTER CTA -->
+        <div class="kartu kotak-footer">
+          <h5 class="fw-bold mb-2">Tahu tempat edukatif yang belum terdaftar?</h5>
+          <p class="mb-3">Bantu komunitas pelajar dengan menambahkan informasi tempat belajar favoritmu.</p>
+          <a href="#" class="tombol-gradient">Rekomendasikan Tempat</a>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <script>
+    function filterTempat() {
+      const cariHero    = document.getElementById('pencarianHero').value.toLowerCase();
+      const cariSamping = document.getElementById('pencarianSamping').value.toLowerCase();
+      const kategori    = document.getElementById('filterKategori').value;
+      const biaya       = document.querySelector('input[name="biaya"]:checked').value;
+      const fasilitas   = document.querySelector('input[name="fasilitas"]:checked').value;
+
+      const items = document.querySelectorAll('.item-tempat');
+      const kataCari = cariHero || cariSamping;
+      let jumlahTampil = 0;
+
+      items.forEach(item => {
+        const nama         = item.dataset.nama.toLowerCase();
+        const itemKategori = item.dataset.kategori;
+        const itemBiaya    = item.dataset.biaya;
+        const itemFasilitas = item.dataset.fasilitas;
+
+        const cocokteks      = kataCari === '' || nama.includes(kataCari);
+        const cocokKategori  = kategori === 'semua' || itemKategori === kategori;
+        const cocokBiaya     = biaya === 'semua' || itemBiaya === biaya;
+        const cocokFasilitas = fasilitas === 'semua' || itemFasilitas.includes(fasilitas);
+
+        if (cocokteks && cocokKategori && cocokBiaya && cocokFasilitas) {
+          item.style.display = 'block';
+          jumlahTampil++;
+        } else {
+          item.style.display = 'none';
+        }
+      });
+
+      document.getElementById('teksJumlah').textContent =
+        `Menampilkan ${jumlahTampil} tempat`;
+
+      document.getElementById('kondisiKosong').style.display =
+        jumlahTampil === 0 ? 'block' : 'none';
+    }
+
+    function resetFilter() {
+      document.getElementById('pencarianHero').value = '';
+      document.getElementById('pencarianSamping').value = '';
+      document.getElementById('filterKategori').value = 'semua';
+      document.querySelector('input[name="biaya"][value="semua"]').checked = true;
+      document.querySelector('input[name="fasilitas"][value="semua"]').checked = true;
+      filterTempat();
+    }
+
+    // Sinkronisasi dua input pencarian
+    document.getElementById('pencarianHero').addEventListener('input', () => {
+      document.getElementById('pencarianSamping').value = '';
+    });
+    document.getElementById('pencarianSamping').addEventListener('input', () => {
+      document.getElementById('pencarianHero').value = '';
+    });
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

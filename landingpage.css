@@ -2,9 +2,11 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap');
 
 :root {
-    --primary-blue: #148fcd; /* Warna biru utama sesuai desain */
+    --primary-blue: #148fcd;
+    /* Warna biru utama sesuai desain */
     --primary-hover: #1072a4;
-    --bg-light: #eef5f9; /* Background biru sangat pudar */
+    --bg-light: #eef5f9;
+    /* Background biru sangat pudar */
     --text-dark: #222222;
 }
 
@@ -20,7 +22,7 @@ body {
 
 /* === 3. NAVBAR STYLING === */
 .navbar {
-    background-color: white; 
+    background-color: white;
 }
 
 .logo-text {
@@ -37,7 +39,8 @@ body {
     transition: color 0.3s ease;
 }
 
-.nav-link:hover, .nav-link.active {
+.nav-link:hover,
+.nav-link.active {
     color: var(--primary-blue) !important;
 }
 
@@ -55,7 +58,8 @@ body {
 
 /* === 4. HERO SECTION STYLING === */
 .hero-section {
-    flex-grow: 1; /* Membuat hero section mengisi sisa tinggi layar */
+    flex-grow: 1;
+    /* Membuat hero section mengisi sisa tinggi layar */
     padding: 3rem 0;
 
     /* background-image: url('gambar-orang.png'); Ganti nama file jika perlu */
@@ -65,7 +69,8 @@ body {
 }
 
 .hero-title {
-    font-size: clamp(2rem, 4vw, 3.2rem); /* Responsif: besar di laptop, mengecil di HP */
+    font-size: clamp(2rem, 4vw, 3.2rem);
+    /* Responsif: besar di laptop, mengecil di HP */
     line-height: 1.25;
 }
 
@@ -93,7 +98,8 @@ body {
 .custom-btn-primary:hover {
     background-color: var(--primary-hover);
     border-color: var(--primary-hover);
-    transform: translateY(-2px); /* Efek tombol terangkat */
+    transform: translateY(-2px);
+    /* Efek tombol terangkat */
     box-shadow: 0 6px 20px rgba(20, 143, 205, 0.3);
 }
 
@@ -108,7 +114,8 @@ body {
     transition: all 0.3s ease;
 }
 
-.custom-btn-outline:hover, .custom-btn-outline:active {
+.custom-btn-outline:hover,
+.custom-btn-outline:active {
     border-color: var(--primary-blue);
     color: var(--primary-blue);
     background-color: #ffffff;
@@ -118,11 +125,14 @@ body {
 
 /* === 6. ANIMATION & IMAGES === */
 .hero-img {
-    max-height: 750px; /* Mencegah gambar terlalu raksasa di layar besar */
+    max-height: 750px;
+    /* Mencegah gambar terlalu raksasa di layar besar */
     object-fit: contain;
 
-    width: 100%;            /* Pastikan width juga diatur agar img-fluid bekerja optimal */
-    height: auto;           /* Menjaga rasio aspek */
+    width: 100%;
+    /* Pastikan width juga diatur agar img-fluid bekerja optimal */
+    height: auto;
+    /* Menjaga rasio aspek */
 }
 
 /* Animasi melayang untuk ilustrasi 3D */
@@ -131,9 +141,17 @@ body {
 }
 
 @keyframes floating {
-    0% { transform: translateY(0px); }
-    50% { transform: translateY(-15px); }
-    100% { transform: translateY(0px); }
+    0% {
+        transform: translateY(0px);
+    }
+
+    50% {
+        transform: translateY(-15px);
+    }
+
+    100% {
+        transform: translateY(0px);
+    }
 }
 
 /* === 7. RESPONSIVE FIXES (Untuk Mobile) === */
@@ -144,14 +162,16 @@ body {
     }
 
     .hero-img {
-        max-height: 400px; /* Di HP jangan terlalu tinggi agar teks di bawahnya kelihatan */
+        max-height: 400px;
+        /* Di HP jangan terlalu tinggi agar teks di bawahnya kelihatan */
         margin-top: 20px;
-}
+    }
 }
 
 /* === 8. FORM SECTION STYLING === */
 .form-section {
-    flex-grow: 1; /* Agar form ke tengah vertikal jika layar tinggi */
+    flex-grow: 1;
+    /* Agar form ke tengah vertikal jika layar tinggi */
 }
 
 .form-title {
@@ -177,7 +197,8 @@ body {
     border-radius: 8px;
     padding: 14px 16px;
     font-size: 0.95rem;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.03); /* Memberikan efek bayangan sangat tipis */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.03);
+    /* Memberikan efek bayangan sangat tipis */
     transition: box-shadow 0.3s ease;
 }
 
@@ -207,9 +228,11 @@ body {
 
 .img-feature {
     width: 100%;
-    aspect-ratio: 1/1; /* Membuat gambar kotak sempurna */
+    aspect-ratio: 1/1;
+    /* Membuat gambar kotak sempurna */
     object-fit: cover;
-    border-radius: 40px; /* Membuat sudut sangat melengkung sesuai gambar */
+    border-radius: 40px;
+    /* Membuat sudut sangat melengkung sesuai gambar */
 }
 
 .feature-title {
@@ -255,7 +278,8 @@ body {
 }
 
 .pricing-card.featured {
-    border: 2px solid #22c55e; /* Hijau untuk yang terpopuler */
+    border: 2px solid #22c55e;
+    /* Hijau untuk yang terpopuler */
 }
 
 /* Badge Icons */
@@ -266,8 +290,15 @@ body {
     display: inline-block;
 }
 
-.light-blue { background-color: #e0f2fe; color: #0ea5e9; }
-.light-green { background-color: #dcfce7; color: #22c55e; }
+.light-blue {
+    background-color: #e0f2fe;
+    color: #0ea5e9;
+}
+
+.light-green {
+    background-color: #dcfce7;
+    color: #22c55e;
+}
 
 .package-name {
     font-size: 1.25rem;
@@ -340,7 +371,7 @@ body {
     border-radius: 5px;
     font-size: 12px;
     font-weight: 700;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 /* Buttons */
@@ -385,116 +416,237 @@ body {
 }
 
 /* Tambahan style khusus untuk navigasi profil ala Google */
-        .profile-nav-link {
-            padding: 0;
-            border: 2px solid transparent;
-            border-radius: 50%;
-            transition: all 0.3s ease;
-        }
-        .profile-nav-link:hover {
-            border-color: var(--primary-blue);
-            transform: scale(1.05);
-        }
-        .navbar-profile-img {
-            width: 40px;
-            height: 40px;
-            object-fit: cover;
-            border-radius: 50%;
-        }
-        .feature-link {
-            text-decoration: none;
-            color: inherit;
-        }
+.profile-nav-link {
+    padding: 0;
+    border: 2px solid transparent;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+}
 
-        /* Konsistensi navigasi profil */
-        .navbar-profile-img {
-            width: 40px;
-            height: 40px;
-            object-fit: cover;
-            border-radius: 50%;
-            border: 2px solid transparent;
-            transition: all 0.3s ease;
-        }
-        .navbar-profile-img:hover {
-            border-color: var(--primary-blue);
-        }
-        /* Menghilangkan garis bawah pada link kartu */
-        .card-link {
-            text-decoration: none;
-            color: inherit;
-            display: block;
-        }
+.profile-nav-link:hover {
+    border-color: var(--primary-blue);
+    transform: scale(1.05);
+}
 
-        /* Style khusus untuk halaman detail */
-        .detail-img {
-            width: 100%;
-            height: 400px;
-            object-fit: cover;
-            border-radius: 20px;
-        }
-        .sidebar-card {
-            position: sticky;
-            top: 100px; /* Menempel saat scroll */
-            border: none;
-            border-radius: 20px;
-        }
-        .info-label {
-            font-size: 0.8rem;
-            color: #6c757d;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 2px;
-        }
-        .info-value {
-            font-weight: 600;
-            color: var(--text-dark);
-            margin-bottom: 15px;
-        }
-        .section-heading {
-            border-left: 5px solid var(--primary-blue);
-            padding-left: 15px;
-            margin: 30px 0 20px;
-        }
-        .navbar-profile-img {
-            width: 40px; height: 40px; object-fit: cover; border-radius: 50%;
-        }
+.navbar-profile-img {
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+    border-radius: 50%;
+}
 
-         :root {
-            --primary-color: #0d6efd;
-            --soft-bg: #f8f9fa;
-        }
-        .filter-pill {
-            transition: all 0.3s ease;
-            border: 1px solid #dee2e6;
-            background: white;
-            color: #6c757d;
-        }
-        .filter-pill:hover, .filter-pill.active {
-            background-color: var(--primary-color);
-            color: white;
-            border-color: var(--primary-color);
-            transform: translateY(-2px);
-        }
-        .sticky-sidebar {
-            top: 100px;
-        }
-        .feature-icon-box {
-            transition: transform 0.2s;
-        }
-        .feature-icon-box:hover {
-            transform: scale(1.05);
-        }
+.feature-link {
+    text-decoration: none;
+    color: inherit;
+}
 
-         .filter-btn {
-            transition: all 0.3s ease;
-            border: 1px solid #dee2e6;
-            background-color: white;
-            color: #6c757d;
-            font-weight: 500;
-        }
-        .filter-btn:hover, .filter-btn.active {
-            background-color: #0d6efd;
-            color: white;
-            border-color: #0d6efd;
-            box-shadow: 0 4px 12px rgba(13, 110, 253, 0.2);
-        }
+/* Konsistensi navigasi profil */
+.navbar-profile-img {
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 2px solid transparent;
+    transition: all 0.3s ease;
+}
+
+.navbar-profile-img:hover {
+    border-color: var(--primary-blue);
+}
+
+/* Menghilangkan garis bawah pada link kartu */
+.card-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+}
+
+/* Style khusus untuk halaman detail */
+.detail-img {
+    width: 100%;
+    height: 400px;
+    object-fit: cover;
+    border-radius: 20px;
+}
+
+.sidebar-card {
+    position: sticky;
+    top: 100px;
+    /* Menempel saat scroll */
+    border: none;
+    border-radius: 20px;
+}
+
+.info-label {
+    font-size: 0.8rem;
+    color: #6c757d;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 2px;
+}
+
+.info-value {
+    font-weight: 600;
+    color: var(--text-dark);
+    margin-bottom: 15px;
+}
+
+.section-heading {
+    border-left: 5px solid var(--primary-blue);
+    padding-left: 15px;
+    margin: 30px 0 20px;
+}
+
+.navbar-profile-img {
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+:root {
+    --primary-color: #0d6efd;
+    --soft-bg: #f8f9fa;
+}
+
+.filter-pill {
+    transition: all 0.3s ease;
+    border: 1px solid #dee2e6;
+    background: white;
+    color: #6c757d;
+}
+
+.filter-pill:hover,
+.filter-pill.active {
+    background-color: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+    transform: translateY(-2px);
+}
+
+.sticky-sidebar {
+    top: 100px;
+}
+
+.feature-icon-box {
+    transition: transform 0.2s;
+}
+
+.feature-icon-box:hover {
+    transform: scale(1.05);
+}
+
+.filter-btn {
+    transition: all 0.3s ease;
+    border: 1px solid #dee2e6;
+    background-color: white;
+    color: #6c757d;
+    font-weight: 500;
+}
+
+.filter-btn:hover,
+.filter-btn.active {
+    background-color: #0d6efd;
+    color: white;
+    border-color: #0d6efd;
+    box-shadow: 0 4px 12px rgba(13, 110, 253, 0.2);
+}
+
+
+.custom-footer {
+    background: linear-gradient(180deg, rgba(15, 28, 63, 0.9) 0%, rgba(13, 40, 74, 1) 30%, rgba(17, 66, 87, 1) 100%);
+    color: #ffffff;
+    padding: 80px 0 30px;
+    /* Sedikit menambah padding atas agar gradasi lebih kerasa */
+    margin-top: 80px;
+    /* Jarak pemisah dari section hero atas */
+    position: relative;
+    /* Memastikan gradasi dan elemen di dalamnya sejajar */
+}
+
+.footer-logo {
+    font-weight: 800;
+    color: #35c7b6;
+    /* Menyamakan dengan aksen warna teal web */
+    font-size: 24px;
+}
+
+.footer-heading {
+    font-size: 16px;
+    font-weight: 700;
+    color: #ffffff;
+}
+
+.footer-desc,
+.footer-contact li {
+    font-size: 14px;
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.75);
+}
+
+.footer-contact li {
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+}
+
+.footer-contact li i {
+    color: #35c7b6;
+    /* Pewarnaan khusus ikon kontak */
+}
+
+/* Pengaturan Tautan Link */
+.footer-links li {
+    margin-bottom: 10px;
+}
+
+.footer-links li a {
+    color: rgba(255, 255, 255, 0.75);
+    text-decoration: none;
+    font-size: 14px;
+    transition: all 0.2s ease;
+}
+
+.footer-links li a:hover {
+    color: #35c7b6;
+    padding-left: 5px;
+    /* Efek bergeser sedikit saat disentuh mouse */
+}
+
+/* Kotak Ikon Sosial Media */
+.footer-socials a {
+    width: 36px;
+    height: 36px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    font-size: 14px;
+}
+
+.footer-socials a:hover {
+    background: #2f6df6;
+    border-color: #2f6df6;
+    transform: translateY(-3px);
+}
+
+/* Pembatas Bawah */
+.footer-bottom {
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.footer-bottom-links a {
+    color: rgba(255, 255, 255, 0.5);
+    text-decoration: none;
+}
+
+.footer-bottom-links a:hover {
+    color: #ffffff;
+}

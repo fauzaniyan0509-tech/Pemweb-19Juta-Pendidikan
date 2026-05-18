@@ -1,0 +1,456 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap');
+
+/* ===== VARIABEL WARNA ===== */
+:root {
+  --biru: #2f6df6;
+  --tosca: #35c7b6;
+  --gelap: #14213d;
+  --abu: #6b7280;
+  --bg-lembut: #eef8fb;
+  --putih: #ffffff;
+  --bayangan: 0 18px 45px rgba(20, 33, 61, 0.10);
+  --border: #eef2f7;
+}
+
+/* ===== RESET DASAR ===== */
+* {
+  font-family: 'Poppins', sans-serif;
+  box-sizing: border-box;
+}
+
+body {
+  background: linear-gradient(180deg, #eef8fb 0%, #f7fcfb 100%);
+  color: var(--gelap);
+  min-height: 100vh;
+  margin: 0;
+}
+
+/* ===== NAVBAR ===== */
+.navbar {
+  background: var(--putih);
+  box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+}
+
+.logo-teks {
+  font-weight: 800;
+  color: var(--biru);
+  text-decoration: none;
+  font-size: 22px;
+}
+
+.nav-link {
+  font-size: 14px;
+  color: #1f2937;
+  font-weight: 500;
+}
+
+.nav-link.aktif {
+  color: var(--biru);
+  font-weight: 700;
+}
+
+.tombol-gradient {
+  background: linear-gradient(90deg, var(--biru), var(--tosca));
+  color: white;
+  border: none;
+  border-radius: 999px;
+  font-weight: 600;
+  padding: 9px 20px;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.tombol-gradient:hover {
+  opacity: 0.9;
+  color: white;
+}
+
+/* ===== HERO & PENCARIAN ===== */
+.judul-hero {
+  font-weight: 800;
+  font-size: 42px;
+  background: linear-gradient(90deg, var(--biru), var(--tosca));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.subjudul-hero {
+  color: var(--abu);
+  max-width: 650px;
+  margin: auto;
+  font-size: 15px;
+}
+
+.kotak-pencarian {
+  max-width: 720px;
+  margin: 28px auto 0;
+  background: white;
+  padding: 10px;
+  border-radius: 18px;
+  box-shadow: var(--bayangan);
+  display: flex;
+  gap: 10px;
+}
+
+.kotak-pencarian input {
+  border: none;
+  flex: 1;
+  padding: 12px 16px;
+  outline: none;
+  font-size: 14px;
+  font-family: 'Poppins', sans-serif;
+  border-radius: 10px;
+  background: transparent;
+}
+
+.kotak-pencarian button {
+  border: none;
+  border-radius: 12px;
+  background: linear-gradient(90deg, var(--biru), var(--tosca));
+  color: white;
+  font-weight: 700;
+  padding: 0 22px;
+  font-family: 'Poppins', sans-serif;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.kotak-pencarian button:hover {
+  opacity: 0.9;
+}
+
+/* ===== KARTU DASAR ===== */
+.kartu {
+  background: var(--putih);
+  border-radius: 20px;
+  box-shadow: var(--bayangan);
+  border: 1px solid var(--border);
+}
+
+/* ===== PANEL FILTER ===== */
+.panel-filter {
+  padding: 24px;
+  position: sticky;
+  top: 95px;
+}
+
+.judul-filter {
+  font-weight: 800;
+  font-size: 20px;
+  margin-bottom: 22px;
+}
+
+label {
+  font-size: 13px;
+  font-weight: 700;
+  color: #334155;
+  margin-bottom: 8px;
+  display: block;
+}
+
+.input-filter,
+.select-filter {
+  border-radius: 12px;
+  padding: 11px 13px;
+  font-size: 14px;
+  border: 1px solid #cbd5e1;
+  font-family: 'Poppins', sans-serif;
+  width: 100%;
+}
+
+.input-filter:focus,
+.select-filter:focus {
+  border-color: var(--tosca);
+  box-shadow: 0 0 0 4px rgba(53, 199, 182, 0.15);
+  outline: none;
+}
+
+.pilihan-radio {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+  font-size: 14px;
+  color: #334155;
+}
+
+.pilihan-radio input[type="radio"] {
+  accent-color: var(--tosca);
+  width: 16px;
+  height: 16px;
+}
+
+.tombol-filter {
+  width: 100%;
+  border: none;
+  border-radius: 12px;
+  padding: 12px;
+  background: linear-gradient(90deg, var(--biru), var(--tosca));
+  color: white;
+  font-weight: 700;
+  margin-top: 14px;
+  cursor: pointer;
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  transition: opacity 0.2s;
+}
+
+.tombol-filter:hover {
+  opacity: 0.9;
+}
+
+.tombol-reset {
+  border: none;
+  background: transparent;
+  color: var(--abu);
+  font-weight: 600;
+  margin-top: 10px;
+  width: 100%;
+  cursor: pointer;
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  padding: 8px;
+}
+
+.tombol-reset:hover {
+  color: var(--gelap);
+}
+
+/* ===== JUDUL SECTION ===== */
+.judul-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 22px;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.judul-section h2 {
+  font-size: 28px;
+  font-weight: 800;
+  margin: 0;
+}
+
+.teks-jumlah {
+  color: var(--abu);
+  font-size: 14px;
+}
+
+/* ===== KARTU TEMPAT EDUKATIF ===== */
+.kartu-tempat {
+  overflow: hidden;
+  transition: 0.25s ease;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.kartu-tempat:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 22px 48px rgba(20, 33, 61, 0.15);
+}
+
+/* Gambar tempat: tinggi tetap, mengisi penuh */
+.gambar-tempat {
+  width: 100%;
+  height: 210px;
+  object-fit: cover;
+  display: block;
+  border-radius: 20px 20px 0 0;
+  flex-shrink: 0;
+}
+
+/* Wrapper gambar — untuk overlay badge */
+.wrapper-gambar {
+  position: relative;
+  flex-shrink: 0;
+}
+
+/* Badge kategori (kiri atas) */
+.label-kategori {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  background: white;
+  color: var(--biru);
+  font-weight: 800;
+  font-size: 11px;
+  padding: 7px 11px;
+  border-radius: 999px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+}
+
+/* Badge status buka/tutup (kanan atas) */
+.label-status {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  font-weight: 800;
+  font-size: 11px;
+  padding: 7px 11px;
+  border-radius: 999px;
+}
+
+.label-status.buka {
+  background: #dcfce7;
+  color: #15803d;
+  border: 1px solid #86efac;
+}
+
+.label-status.berbayar {
+  background: #fff7ed;
+  color: #c2410c;
+  border: 1px solid #fed7aa;
+}
+
+.label-status.gratis {
+  background: #effffb;
+  color: #087f6f;
+  border: 1px solid var(--tosca);
+}
+
+/* Isi kartu */
+.isi-kartu {
+  padding: 20px 22px 22px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.nama-tempat {
+  font-weight: 800;
+  font-size: 17px;
+  margin-bottom: 4px;
+  line-height: 1.35;
+}
+
+.alamat-tempat {
+  color: var(--abu);
+  font-size: 13px;
+  margin-bottom: 12px;
+}
+
+/* Baris tag/pill */
+.baris-tag {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+
+.tag {
+  background: #f1f5f9;
+  color: #334155;
+  border-radius: 999px;
+  padding: 6px 10px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.tag.gratis {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+/* Box jam operasional */
+.kotak-jam {
+  background: #f0f9ff;
+  color: #075985;
+  border: 1px solid #bae6fd;
+  border-radius: 12px;
+  padding: 10px 12px;
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 14px;
+}
+
+/* Deskripsi singkat */
+.deskripsi-singkat {
+  font-size: 13px;
+  color: #475569;
+  line-height: 1.6;
+  margin-bottom: 16px;
+  flex: 1;
+}
+
+/* Tombol lihat detail */
+.tombol-detail {
+  width: 100%;
+  border: none;
+  border-radius: 12px;
+  padding: 12px;
+  background: linear-gradient(90deg, var(--biru), var(--tosca));
+  color: white;
+  font-weight: 700;
+  text-decoration: none;
+  display: block;
+  text-align: center;
+  font-size: 14px;
+  font-family: 'Poppins', sans-serif;
+  cursor: pointer;
+  transition: opacity 0.2s, transform 0.2s;
+  margin-top: auto;
+}
+
+.tombol-detail:hover {
+  opacity: 0.9;
+  color: white;
+  transform: translateY(-1px);
+}
+
+/* ===== EMPTY STATE ===== */
+.kondisi-kosong {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--abu);
+  display: none;
+}
+
+.kondisi-kosong .ikon-kosong {
+  font-size: 56px;
+  margin-bottom: 14px;
+}
+
+.kondisi-kosong h5 {
+  font-weight: 700;
+  color: var(--gelap);
+}
+
+/* ===== FOOTER CTA ===== */
+.kotak-footer {
+  margin-top: 50px;
+  padding: 28px;
+  text-align: center;
+  color: var(--abu);
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 991px) {
+  .panel-filter {
+    position: static;
+  }
+
+  .judul-hero {
+    font-size: 30px;
+  }
+
+  .kotak-pencarian {
+    flex-direction: column;
+  }
+
+  .kotak-pencarian button {
+    padding: 12px;
+  }
+}
+
+@media (max-width: 576px) {
+  .judul-section h2 {
+    font-size: 22px;
+  }
+
+  .gambar-tempat {
+    height: 180px;
+  }
+}
