@@ -1,0 +1,652 @@
+/* === 1. GOOGLE FONTS & ROOT VARIABLES === */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap');
+
+:root {
+    --primary-blue: #148fcd;
+    /* Warna biru utama sesuai desain */
+    --primary-hover: #1072a4;
+    --bg-light: #eef5f9;
+    /* Background biru sangat pudar */
+    --text-dark: #222222;
+}
+
+/* === 2. BASE STYLING === */
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--bg-light);
+    color: var(--text-dark);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* === 3. NAVBAR STYLING === */
+.navbar {
+    background-color: white;
+}
+
+.logo-text {
+    color: var(--primary-blue) !important;
+    font-size: 1.6rem;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+}
+
+.nav-link {
+    color: #444 !important;
+    font-weight: 500;
+    font-size: 0.95rem;
+    transition: color 0.3s ease;
+}
+
+.nav-link:hover,
+.nav-link.active {
+    color: var(--primary-blue) !important;
+}
+
+.btn-nav {
+    background-color: var(--primary-blue);
+    border-color: var(--primary-blue);
+    font-weight: 500;
+    border-radius: 6px;
+}
+
+.btn-nav:hover {
+    background-color: var(--primary-hover);
+    border-color: var(--primary-hover);
+}
+
+/* === 4. HERO SECTION STYLING === */
+.hero-section {
+    flex-grow: 1;
+    /* Membuat hero section mengisi sisa tinggi layar */
+    padding: 3rem 0;
+
+    /* background-image: url('gambar-orang.png'); Ganti nama file jika perlu */
+    /* background-size: cover; Gambar akan menutupi seluruh area */
+    /* background-position: center; Gambar akan rata tengah */
+    /* background-repeat: no-repeat; */
+}
+
+.hero-title {
+    font-size: clamp(2rem, 4vw, 3.2rem);
+    /* Responsif: besar di laptop, mengecil di HP */
+    line-height: 1.25;
+}
+
+.hero-title .text-blue {
+    color: var(--primary-blue);
+}
+
+.hero-text {
+    font-size: 0.95rem;
+    line-height: 1.8;
+}
+
+/* === 5. CUSTOM BUTTONS === */
+.custom-btn-primary {
+    background-color: var(--primary-blue);
+    border-color: var(--primary-blue);
+    padding: 12px 32px;
+    font-size: 0.95rem;
+    font-weight: 500;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(20, 143, 205, 0.2);
+    transition: all 0.3s ease;
+}
+
+.custom-btn-primary:hover {
+    background-color: var(--primary-hover);
+    border-color: var(--primary-hover);
+    transform: translateY(-2px);
+    /* Efek tombol terangkat */
+    box-shadow: 0 6px 20px rgba(20, 143, 205, 0.3);
+}
+
+.custom-btn-outline {
+    background-color: #ffffff;
+    color: var(--primary-blue);
+    border: 1px solid rgba(20, 143, 205, 0.3);
+    padding: 12px 32px;
+    font-size: 0.95rem;
+    font-weight: 500;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.custom-btn-outline:hover,
+.custom-btn-outline:active {
+    border-color: var(--primary-blue);
+    color: var(--primary-blue);
+    background-color: #ffffff;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+/* === 6. ANIMATION & IMAGES === */
+.hero-img {
+    max-height: 750px;
+    /* Mencegah gambar terlalu raksasa di layar besar */
+    object-fit: contain;
+
+    width: 100%;
+    /* Pastikan width juga diatur agar img-fluid bekerja optimal */
+    height: auto;
+    /* Menjaga rasio aspek */
+}
+
+/* Animasi melayang untuk ilustrasi 3D */
+.float-animation {
+    animation: floating 3.5s ease-in-out infinite;
+}
+
+@keyframes floating {
+    0% {
+        transform: translateY(0px);
+    }
+
+    50% {
+        transform: translateY(-15px);
+    }
+
+    100% {
+        transform: translateY(0px);
+    }
+}
+
+/* === 7. RESPONSIVE FIXES (Untuk Mobile) === */
+@media (max-width: 991px) {
+    .hero-text {
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .hero-img {
+        max-height: 400px;
+        /* Di HP jangan terlalu tinggi agar teks di bawahnya kelihatan */
+        margin-top: 20px;
+    }
+}
+
+/* === 8. FORM SECTION STYLING === */
+.form-section {
+    flex-grow: 1;
+    /* Agar form ke tengah vertikal jika layar tinggi */
+}
+
+.form-title {
+    font-size: 2rem;
+    color: var(--text-dark);
+}
+
+.form-subtitle {
+    font-size: 0.9rem;
+}
+
+.custom-label {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: #444;
+    margin-bottom: 6px;
+    padding-left: 2px;
+}
+
+.custom-input {
+    background-color: #ffffff;
+    border: none;
+    border-radius: 8px;
+    padding: 14px 16px;
+    font-size: 0.95rem;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.03);
+    /* Memberikan efek bayangan sangat tipis */
+    transition: box-shadow 0.3s ease;
+}
+
+/* Saat input sedang diisi / di-klik */
+.custom-input:focus {
+    background-color: #ffffff;
+    box-shadow: 0 4px 15px rgba(20, 143, 205, 0.15);
+    border: none;
+    outline: none;
+}
+
+/* === 9. TAMPILAN PRODUK STYLING === */
+.section-title {
+    max-width: 600px;
+    margin: 0 auto;
+    line-height: 1.4;
+}
+
+.feature-card {
+    padding: 10px;
+    transition: transform 0.3s ease;
+}
+
+.feature-card:hover {
+    transform: translateY(-5px);
+}
+
+.img-feature {
+    width: 100%;
+    aspect-ratio: 1/1;
+    /* Membuat gambar kotak sempurna */
+    object-fit: cover;
+    border-radius: 40px;
+    /* Membuat sudut sangat melengkung sesuai gambar */
+}
+
+.feature-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-bottom: 12px;
+}
+
+.feature-desc {
+    font-size: 0.9rem;
+    line-height: 1.6;
+}
+
+.avatar-img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.extra-small {
+    font-size: 0.75rem;
+}
+
+.promo-banner {
+    border-left: 5px solid var(--primary-blue);
+}
+
+/* Pricing Cards */
+.pricing-card {
+    background: #fff;
+    border: 1.5px solid #e0e7ff;
+    border-radius: 20px;
+    padding: 40px 30px;
+    position: relative;
+    transition: all 0.3s ease;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.02);
+}
+
+.pricing-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 20px 40px rgba(0, 123, 255, 0.1);
+}
+
+.pricing-card.featured {
+    border: 2px solid #22c55e;
+    /* Hijau untuk yang terpopuler */
+}
+
+/* Badge Icons */
+.icon-box .badge-icon {
+    font-size: 24px;
+    padding: 12px;
+    border-radius: 12px;
+    display: inline-block;
+}
+
+.light-blue {
+    background-color: #e0f2fe;
+    color: #0ea5e9;
+}
+
+.light-green {
+    background-color: #dcfce7;
+    color: #22c55e;
+}
+
+.package-name {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.price-wrapper {
+    display: flex;
+    align-items: baseline;
+    margin-bottom: 20px;
+}
+
+.price {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin-right: 5px;
+}
+
+.duration {
+    color: #64748b;
+    font-size: 1rem;
+}
+
+/* Savings Box */
+.savings-box {
+    background-color: #f0fdf4;
+    border: 1px dashed #22c55e;
+    padding: 10px;
+    border-radius: 10px;
+}
+
+.savings-box p {
+    margin: 0;
+    font-size: 0.85rem;
+    color: #166534;
+    font-weight: 500;
+}
+
+/* List Items */
+.benefit-list {
+    list-style: none;
+    padding: 0;
+    margin: 20px 0;
+}
+
+.benefit-list li {
+    margin-bottom: 12px;
+    font-size: 0.95rem;
+    display: flex;
+    align-items: center;
+    color: #475569;
+}
+
+.check-icon {
+    color: #22c55e;
+    font-weight: bold;
+    margin-right: 12px;
+}
+
+/* Popular Badge */
+.popular-badge {
+    position: absolute;
+    top: 20px;
+    right: -10px;
+    background-color: #fbbf24;
+    color: #fff;
+    padding: 5px 15px;
+    border-radius: 5px;
+    font-size: 12px;
+    font-weight: 700;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Buttons */
+.btn-primary {
+    background-color: #007bff;
+    border: none;
+    border-radius: 10px;
+    padding: 12px;
+    font-weight: 600;
+    transition: 0.3s;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+}
+
+.btn-primary-outline {
+    background: transparent;
+    color: #007bff;
+    border: 2px solid #007bff;
+    border-radius: 10px;
+    padding: 10px;
+    font-weight: 600;
+}
+
+.btn-primary-outline:hover {
+    background: #007bff;
+    color: #fff;
+}
+
+/* Grayscale Sponsor Logos */
+.grayscale-logos img {
+    max-height: 35px;
+    filter: grayscale(100%);
+    opacity: 0.6;
+    transition: 0.3s;
+}
+
+.grayscale-logos img:hover {
+    filter: grayscale(0%);
+    opacity: 1;
+}
+
+/* Tambahan style khusus untuk navigasi profil ala Google */
+.profile-nav-link {
+    padding: 0;
+    border: 2px solid transparent;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+}
+
+.profile-nav-link:hover {
+    border-color: var(--primary-blue);
+    transform: scale(1.05);
+}
+
+.navbar-profile-img {
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+.feature-link {
+    text-decoration: none;
+    color: inherit;
+}
+
+/* Konsistensi navigasi profil */
+.navbar-profile-img {
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 2px solid transparent;
+    transition: all 0.3s ease;
+}
+
+.navbar-profile-img:hover {
+    border-color: var(--primary-blue);
+}
+
+/* Menghilangkan garis bawah pada link kartu */
+.card-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+}
+
+/* Style khusus untuk halaman detail */
+.detail-img {
+    width: 100%;
+    height: 400px;
+    object-fit: cover;
+    border-radius: 20px;
+}
+
+.sidebar-card {
+    position: sticky;
+    top: 100px;
+    /* Menempel saat scroll */
+    border: none;
+    border-radius: 20px;
+}
+
+.info-label {
+    font-size: 0.8rem;
+    color: #6c757d;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 2px;
+}
+
+.info-value {
+    font-weight: 600;
+    color: var(--text-dark);
+    margin-bottom: 15px;
+}
+
+.section-heading {
+    border-left: 5px solid var(--primary-blue);
+    padding-left: 15px;
+    margin: 30px 0 20px;
+}
+
+.navbar-profile-img {
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+:root {
+    --primary-color: #0d6efd;
+    --soft-bg: #f8f9fa;
+}
+
+.filter-pill {
+    transition: all 0.3s ease;
+    border: 1px solid #dee2e6;
+    background: white;
+    color: #6c757d;
+}
+
+.filter-pill:hover,
+.filter-pill.active {
+    background-color: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+    transform: translateY(-2px);
+}
+
+.sticky-sidebar {
+    top: 100px;
+}
+
+.feature-icon-box {
+    transition: transform 0.2s;
+}
+
+.feature-icon-box:hover {
+    transform: scale(1.05);
+}
+
+.filter-btn {
+    transition: all 0.3s ease;
+    border: 1px solid #dee2e6;
+    background-color: white;
+    color: #6c757d;
+    font-weight: 500;
+}
+
+.filter-btn:hover,
+.filter-btn.active {
+    background-color: #0d6efd;
+    color: white;
+    border-color: #0d6efd;
+    box-shadow: 0 4px 12px rgba(13, 110, 253, 0.2);
+}
+
+
+.custom-footer {
+    background: linear-gradient(180deg, rgba(15, 28, 63, 0.9) 0%, rgba(13, 40, 74, 1) 30%, rgba(17, 66, 87, 1) 100%);
+    color: #ffffff;
+    padding: 80px 0 30px;
+    /* Sedikit menambah padding atas agar gradasi lebih kerasa */
+    margin-top: 80px;
+    /* Jarak pemisah dari section hero atas */
+    position: relative;
+    /* Memastikan gradasi dan elemen di dalamnya sejajar */
+}
+
+.footer-logo {
+    font-weight: 800;
+    color: #35c7b6;
+    /* Menyamakan dengan aksen warna teal web */
+    font-size: 24px;
+}
+
+.footer-heading {
+    font-size: 16px;
+    font-weight: 700;
+    color: #ffffff;
+}
+
+.footer-desc,
+.footer-contact li {
+    font-size: 14px;
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.75);
+}
+
+.footer-contact li {
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+}
+
+.footer-contact li i {
+    color: #35c7b6;
+    /* Pewarnaan khusus ikon kontak */
+}
+
+/* Pengaturan Tautan Link */
+.footer-links li {
+    margin-bottom: 10px;
+}
+
+.footer-links li a {
+    color: rgba(255, 255, 255, 0.75);
+    text-decoration: none;
+    font-size: 14px;
+    transition: all 0.2s ease;
+}
+
+.footer-links li a:hover {
+    color: #35c7b6;
+    padding-left: 5px;
+    /* Efek bergeser sedikit saat disentuh mouse */
+}
+
+/* Kotak Ikon Sosial Media */
+.footer-socials a {
+    width: 36px;
+    height: 36px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    font-size: 14px;
+}
+
+.footer-socials a:hover {
+    background: #2f6df6;
+    border-color: #2f6df6;
+    transform: translateY(-3px);
+}
+
+/* Pembatas Bawah */
+.footer-bottom {
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.footer-bottom-links a {
+    color: rgba(255, 255, 255, 0.5);
+    text-decoration: none;
+}
+
+.footer-bottom-links a:hover {
+    color: #ffffff;
+}
