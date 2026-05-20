@@ -145,7 +145,7 @@ $list_verif = mysqli_query($conn, $query_verif);
       <div class="logo-text">19JutaAdmin</div>
       <div class="menu-label">Menu Admin</div>
       <a class="menu-item active" onclick="showSection('dashboard', this)">📊 Dashboard</a>
-      <a class="menu-item" onclick="showSection('lomba', this)">🏆 Kelola Lomba</a>
+      <a class="menu-item" onclick="showSection('lomba', this)" href="halamankelolaLomba.php">🏆 Kelola Lomba</a>
       <a class="menu-item" onclick="showSection('beasiswa', this)">🎓 Kelola Beasiswa</a>
       <a class="menu-item" onclick="showSection('tempat', this)">📍 Kelola Tempat</a>
       <a class="menu-item" onclick="showSection('verifikasi', this)" href="halamanVerifikasi.php">✅ Verifikasi Iklan</a>

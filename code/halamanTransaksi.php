@@ -37,6 +37,7 @@
     .pricing-card.selected .choose-btn { display: none; }
     .choose-btn { width: 100%; border-radius: 10px; padding: 11px; border: none; background: #f1f5f9; color: var(--dark); font-weight: 600; margin-top: 18px; }
     .saving-box { border: 1px dashed var(--teal); background: #f0fffb; border-radius: 10px; font-size: 13px; color: #087f6f; padding: 10px; margin: 15px 0; }
+
     .form-card { padding: 28px; }
     .form-header { border-bottom: 1px solid var(--border); padding-bottom: 18px; margin-bottom: 20px; display: flex; gap: 14px; align-items: center; }
     .form-icon { width: 42px; height: 42px; border-radius: 12px; background: linear-gradient(90deg, var(--blue), var(--teal)); color: white; display: flex; justify-content: center; align-items: center; font-size: 20px; }
@@ -67,8 +68,8 @@
       </button>
       <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
         <ul class="navbar-nav align-items-center gap-lg-4">
-          <li class="nav-item"><a class="nav-link" href="halaman_lomba.php">Beranda</a></li>
-          <li class="nav-item"><a class="nav-link" href="halaman_lomba.php">Lomba</a></li>
+          <li class="nav-item"><a class="nav-link" href="halamanLomba.php">Beranda</a></li>
+          <li class="nav-item"><a class="nav-link" href="halamanLomba.php">Lomba</a></li>
           <li class="nav-item"><a class="nav-link" href="#">Beasiswa</a></li>
           <li class="nav-item"><a class="nav-link" href="#">Peta Edukasi</a></li>
           <li class="nav-item"><a class="btn btn-publish" href="#">Publikasi Lomba</a></li>
@@ -103,7 +104,7 @@
             <button type="button" class="selected-badge">Paket Terpilih</button>
           </div>
 
-          <div class="pricing-card selected" data-name="Paket Langganan Tahunan" data-price="499000" data-desc="Unlimited publikasi selama 12 month">
+          <div class="pricing-card mb-4 selected" data-name="Paket Langganan Tahunan" data-price="499000" data-desc="Unlimited publikasi selama 12 month">
             <span class="badge-popular">TERPOPULER</span>
             <div class="package-icon">✨</div>
             <h3 class="package-title">Paket Langganan Tahunan</h3>
@@ -293,13 +294,11 @@
       }
     });
 
-    // Cegah submit bawaan agar modal tampil dulu
     form.addEventListener('submit', function(e) {
       e.preventDefault(); 
       successModal.style.display = 'flex';
     });
 
-    // Eksekusi submit asli saat tombol selesai di dalam modal diklik
     function closeModal() {
       successModal.style.display = 'none';
       form.submit(); 
