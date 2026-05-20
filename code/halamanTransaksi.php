@@ -196,6 +196,12 @@
               <label for="deskripsi">Deskripsi Lomba <span class="required">*</span></label>
               <textarea name="deskripsi" id="deskripsi" class="form-control" rows="3" maxlength="200" required></textarea>
             </div>
+            
+            <div class="mb-3">
+              <label for="poster">Upload Poster Lomba <span class="required">*</span></label>
+              <input type="file" name="poster" id="poster" class="form-control" accept="image/*" required>
+              <small class="text-muted" style="font-size: 11px;">Format yang didukung: JPG, JPEG, PNG.</small>
+            </div>
 
             <h6 class="section-title">Detail Iklan</h6>
             <div class="mb-3">

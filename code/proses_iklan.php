@@ -3,7 +3,7 @@
 $host = "localhost";
 $user = "root";
 $pass = "";
-$db   = "19juta_pendidikan"; // Pastikan nama database sudah sesuai
+$db   = "19juta_pendidikan"; 
 
 $conn = mysqli_connect($host, $user, $pass, $db);
 
@@ -28,53 +28,59 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $judul_iklan       = $_POST['judul_iklan'];
     $metode_pembayaran = $_POST['metode_pembayaran'];
 
-    // Sesi User Dummy (Sesuaikan dengan sistem login/session aplikasi 19JutaPendidikan kamu)
+    // Sesi User Dummy
     $id_user_aktif     = 1; 
 
-    // PROSES INTEGRASI FILE GAMBAR BUKTI PEMBAYARAN
-    $bukti_pembayaran = $_FILES['bukti_pembayaran']['name'];
-    $tmp_name         = $_FILES['bukti_pembayaran']['tmp_name'];
-    
-    // Potong ekstensi file asli (.png / .jpg)
-    $ekstensi          = pathinfo($bukti_pembayaran, PATHINFO_EXTENSION);
-    // Enskripsi nama file baru agar unik memanfaatkan fungsi waktu timestamp
-    $nama_file_baru    = "bukti_" . time() . "_" . rand(100, 999) . "." . $ekstensi;
+    // Folder tujuan upload
     $folder_upload     = "uploads/";
-
-    // Bikin folder uploads otomatis kalau belum tersedia di direktori htdocs
     if (!is_dir($folder_upload)) {
         mkdir($folder_upload, 0777, true);
     }
 
-    // Pindahkan file dari folder temporary local server ke folder uploads utama
-    if (move_uploaded_file($tmp_name, $folder_upload . $nama_file_baru)) {
+    // --- PROSES FILE 1: BUKTI PEMBAYARAN ---
+    $bukti_pembayaran = $_FILES['bukti_pembayaran']['name'];
+    $tmp_bukti        = $_FILES['bukti_pembayaran']['tmp_name'];
+    $ekstensi_bukti   = pathinfo($bukti_pembayaran, PATHINFO_EXTENSION);
+    $nama_bukti_baru  = "bukti_" . time() . "_" . rand(100, 999) . "." . $ekstensi_bukti;
+
+    // --- PROSES FILE 2: POSTER LOMBA ---
+    $poster_lomba     = $_FILES['poster']['name'];
+    $tmp_poster       = $_FILES['poster']['tmp_name'];
+    $ekstensi_poster  = pathinfo($poster_lomba, PATHINFO_EXTENSION);
+    $nama_poster_baru = "poster_" . time() . "_" . rand(100, 999) . "." . $ekstensi_poster;
+
+    // Pindahkan KEDUA file dari temporary ke folder uploads
+    $upload_bukti_sukses  = move_uploaded_file($tmp_bukti, $folder_upload . $nama_bukti_baru);
+    $upload_poster_sukses = move_uploaded_file($tmp_poster, $folder_upload . $nama_poster_baru);
+
+    if ($upload_bukti_sukses && $upload_poster_sukses) {
         
-        // [LANGKAH A]: INSERT DATA KE TABEL 'lomba' (Sesuai Struktur Alter Kolom Kamu)
-        $query_lomba = "INSERT INTO lomba (judul_lomba, penyelenggara, kategori, tingkat_lomba, deadline, tipe_biaya, biaya, deskripsi, status_publish) 
-                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'pending')";
+        // [LANGKAH A]: INSERT DATA KE TABEL 'lomba' (Ditambah kolom poster)
+        $query_lomba = "INSERT INTO lomba (judul_lomba, penyelenggara, kategori, tingkat_lomba, deadline, tipe_biaya, biaya, deskripsi, poster, status_publish) 
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending')";
         $stmt_lomba = $conn->prepare($query_lomba);
-        $stmt_lomba->bind_param("ssssssis", $judul_lomba, $penyelenggara, $kategori, $tingkat_lomba, $deadline, $tipe_biaya, $biaya_pendaftaran, $deskripsi);
+        
+        // Perhatikan tambahan 's' di parameter pertama dan variabel $nama_poster_baru di akhir
+        $stmt_lomba->bind_param("ssssssiss", $judul_lomba, $penyelenggara, $kategori, $tingkat_lomba, $deadline, $tipe_biaya, $biaya_pendaftaran, $deskripsi, $nama_poster_baru);
         $stmt_lomba->execute();
         
-        // Dapatkan ID auto_increment yang baru saja tercipta dari tabel lomba
         $id_lomba_baru = $conn->insert_id; 
         $stmt_lomba->close();
 
 
-        // [LANGKAH B]: INSERT DATA KE TABEL 'pembayaran' (Termasuk ID User & Bukti Pembayaran Baru)
+        // [LANGKAH B]: INSERT DATA KE TABEL 'pembayaran'
         $query_pembayaran = "INSERT INTO pembayaran (id_user, jumlah, metode_pembayaran, bukti_pembayaran, status_pembayaran) 
                              VALUES (?, ?, ?, ?, 'pending')";
         $stmt_pembayaran = $conn->prepare($query_pembayaran);
-        $stmt_pembayaran->bind_param("iiss", $id_user_aktif, $jumlah_bayar, $metode_pembayaran, $nama_file_baru);
+        $stmt_pembayaran->bind_param("iiss", $id_user_aktif, $jumlah_bayar, $metode_pembayaran, $nama_bukti_baru);
         $stmt_pembayaran->execute();
         
-        // Dapatkan ID auto_increment yang baru saja tercipta dari tabel pembayaran
         $id_pembayaran_baru = $conn->insert_id; 
         $stmt_pembayaran->close();
 
 
         // [LANGKAH C]: INTEGRASIKAN KEDUA ID KEDALAM TABEL UTAMA 'iklan_lomba'
-        $status_awal = "menunggu"; // Menggunakan ENUM 'menunggu' sesuai rancangan tabel iklan_lomba milikmu
+        $status_awal = "menunggu"; 
         $query_iklan = "INSERT INTO iklan_lomba (id_user, id_lomba, id_pembayaran, judul_iklan, paket_langganan, status_verifikasi, is_read) 
                         VALUES (?, ?, ?, ?, ?, ?, 0)";
         $stmt_iklan = $conn->prepare($query_iklan);
@@ -84,7 +90,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $stmt_iklan->close();
             mysqli_close($conn);
             
-            // Pengalihan otomatis (Redirect) langsung ke halaman_lomba.php dengan membawa parameter status sukses
+            // Redirect jika sukses
             header("Location: halamanLomba.php?status=sukses");
             exit();
         } else {
@@ -92,7 +98,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
 
     } else {
-        echo "Gagal memindahkan file gambar bukti pendaftaran ke direktori server.";
+        echo "Gagal mengunggah file gambar (poster atau bukti pembayaran) ke direktori server. Pastikan ukuran file tidak melebihi batas dan folder 'uploads' memiliki izin tulis (write permission).";
     }
 }
 

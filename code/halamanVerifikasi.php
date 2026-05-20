@@ -138,7 +138,17 @@ if (isset($_GET['periksa_id'])) {
                     <tr><td class="label-view">Deskripsi Mekanisme</td><td>: <p class="text-muted d-inline"><?= htmlspecialchars($detail['deskripsi']) ?></p></td></tr>
                   </table>
 
-                  <h6 class="fw-bold text-dark border-bottom pb-2 mb-3">🖼️ Dokumen Bukti Transfer</h6>
+                  <h6 class="fw-bold text-dark border-bottom pb-2 mb-3">🖼️ Poster Resmi Lomba</h6>
+                  <div class="text-center mb-4">
+                    <?php if (!empty($detail['poster'])): ?>
+                      <img src="uploads/<?= htmlspecialchars($detail['poster']) ?>" alt="Poster Lomba" class="bukti-img mb-2">
+                    <?php else: ?>
+                      <div class="p-4 bg-light rounded-3 text-muted small">User tidak mengunggah poster lomba.</div>
+                    <?php endif; ?>
+                    <br><small class="text-muted">Klik kanan gambar untuk memperbesar di tab baru</small>
+                  </div>
+
+                  <h6 class="fw-bold text-dark border-bottom pb-2 mb-3">💳 Dokumen Bukti Transfer</h6>
                   <div class="text-center mb-4">
                     <img src="uploads/<?= htmlspecialchars($detail['bukti_pembayaran']) ?>" alt="Bukti Pembayaran" class="bukti-img mb-2">
                     <br><small class="text-muted">Klik kanan gambar untuk memperbesar di tab baru</small>
