@@ -153,17 +153,14 @@
                 <select name="kategori" id="kategori" class="form-select" required>
                   <option value=""></option>
                   <option value="Akademik">Akademik</option>
-                  <option value="Desain">Desain</option>
-                  <option value="Teknologi">Teknologi</option>
-                  <option value="Esai">Esai</option>
-                  <option value="Bisnis">Bisnis</option>
+                  <option value="Akademik">Non Akademik</option>
                 </select>
               </div>
               <div class="col-md-4 mb-3">
                 <label for="tingkat_lomba">Tingkat Lomba <span class="required">*</span></label>
                 <select name="tingkat_lomba" id="tingkat_lomba" class="form-select" required>
                   <option value=""></option>
-                  <option value="Sekolah">Sekolah / Instansi</option>
+                  <option value="Kabupaten / Kota">Kabupaten / Kota</option>
                   <option value="Regional">Regional / Provinsi</option>
                   <option value="Nasional">Nasional</option>
                   <option value="Internasional">Internasional</option>

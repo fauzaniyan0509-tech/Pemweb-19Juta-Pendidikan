@@ -12,7 +12,7 @@ if (!$conn) {
     die("Koneksi gagal: " . mysqli_connect_error());
 }
 
-// 2. PROSES HAPUS DATA LOMBA (SAMA SEPERTI SEBELUMNYA)
+// 2. PROSES HAPUS DATA LOMBA
 if (isset($_GET['hapus_id'])) {
     $id_lomba = mysqli_real_escape_string($conn, $_GET['hapus_id']);
     
@@ -50,33 +50,29 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['update_lomba'])) {
     $deskripsi     = mysqli_real_escape_string($conn, $_POST['deskripsi']);
 
     // Logika Pemrosesan Gambar (POSTER BARU)
-    // Ambil data poster lama untuk backup dan penghapusan jika diganti
     $query_old = mysqli_query($conn, "SELECT poster FROM lomba WHERE id_lomba = '$id_lomba'");
     $data_old = mysqli_fetch_assoc($query_old);
     $poster_fix = $data_old['poster']; // Default: pakai yang lama
     
-    // Cek apakah admin mengupload file baru di input 'poster'
     if ($_FILES['poster']['name'] != "") {
         $target_dir = "uploads/";
         $nama_file_lama = $_FILES['poster']['name'];
         $file_extension = pathinfo($nama_file_lama, PATHINFO_EXTENSION);
         
-        // Buat nama unik baru untuk poster agar tidak bentrok
+        // Buat nama unik baru untuk poster
         $nama_poster_baru = time() . '_' . uniqid() . '.' . $file_extension;
         $target_file = $target_dir . $nama_poster_baru;
         
-        // Pindahkan file baru
         if (move_uploaded_file($_FILES["poster"]["tmp_name"], $target_file)) {
-            $poster_fix = $nama_poster_baru; // Set nama file baru untuk disimpan ke DB
+            $poster_fix = $nama_poster_baru;
             
-            // Hapus file poster lama (biar server gak penuh), kecuali default.jpg
             if ($data_old['poster'] && file_exists("uploads/" . $data_old['poster']) && $data_old['poster'] != 'default.jpg') {
                 unlink("uploads/" . $data_old['poster']);
             }
         }
     }
 
-    // Mulai Update Database (Sekarang mencakup kolom 'poster')
+    // Mulai Update Database
     $query_update = "UPDATE lomba SET 
                         judul_lomba = '$judul', 
                         penyelenggara = '$penyelenggara',
@@ -97,8 +93,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['update_lomba'])) {
     exit();
 }
 
-// 4. AMBIL DATA LOMBA UNTUK DITAMPILKAN DI TABEL
+// 4. AMBIL DATA UNTUK HALAMAN & INITIAL DATA SIDEBAR NOTIF
 $list_lomba = mysqli_query($conn, "SELECT * FROM lomba ORDER BY id_lomba DESC");
+
+// Query hitung data menunggu untuk sinkronisasi awal variabel javascript
+$query_menunggu = mysqli_query($conn, "SELECT COUNT(*) as total FROM iklan_lomba WHERE status_verifikasi = 'menunggu'");
+$data_menunggu = mysqli_fetch_assoc($query_menunggu);
+$total_menunggu = $data_menunggu['total'] ?? 0;
 ?>
 
 <!DOCTYPE html>
@@ -117,10 +118,16 @@ $list_lomba = mysqli_query($conn, "SELECT * FROM lomba ORDER BY id_lomba DESC");
     * { font-family: 'Poppins', sans-serif; box-sizing: border-box; }
     body { background: linear-gradient(180deg, #eef8fb 0%, #f7fcfb 100%); color: var(--dark); min-height: 100vh; }
     .admin-wrapper { display: flex; min-height: 100vh; }
-    .sidebar { width: 270px; background: #ffffff; border-right: 1px solid var(--border); padding: 26px 20px; position: fixed; height: 100vh; box-shadow: 8px 0 30px rgba(20, 33, 61, 0.05); overflow-y: auto;}
-    .logo-text { font-weight: 800; font-size: 22px; color: var(--blue); margin-bottom: 36px; }
-    .menu-item { display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: 14px; color: #334155; text-decoration: none; font-size: 14px; font-weight: 600; margin-bottom: 8px; transition: 0.25s ease; cursor: pointer; }
+    
+    /* Sidebar Styling Modifikasi flexbox agar logout tetap di bawah tanpa absolute bug */
+    .sidebar { width: 270px; background: #ffffff; border-right: 1px solid var(--border); padding: 26px 20px; position: fixed; height: 100vh; box-shadow: 8px 0 30px rgba(20, 33, 61, 0.05); overflow-y: auto; display: flex; flex-direction: column; }
+    .logo-text { font-weight: 800; font-size: 22px; color: var(--blue); margin-bottom: 24px; }
+    .menu-label { font-size: 11px; color: var(--muted); font-weight: 700; margin-top: 16px; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
+    .menu-item { display: flex; align-items: center; gap: 12px; padding: 11px 14px; border-radius: 12px; color: #334155; text-decoration: none; font-size: 13.5px; font-weight: 600; margin-bottom: 4px; transition: 0.25s ease; cursor: pointer; }
     .menu-item:hover, .menu-item.active { background: linear-gradient(90deg, var(--blue), var(--teal)); color: white; transform: translateX(4px); }
+    .logout { background: #fee2e2; color: #b91c1c; text-align: center; justify-content: center; margin-top: auto; margin-bottom: 10px; }
+    .logout:hover { background: #fca5a5; color: #b91c1c; transform: none; }
+    
     .main-content { margin-left: 270px; width: calc(100% - 270px); padding: 34px; }
     .topbar { background: white; border-radius: 22px; padding: 22px 26px; box-shadow: var(--shadow); display: flex; justify-content: space-between; align-items: center; margin-bottom: 28px; }
     .page-title { font-size: 30px; font-weight: 800; margin: 0; background: linear-gradient(90deg, var(--blue), var(--teal)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
@@ -132,13 +139,14 @@ $list_lomba = mysqli_query($conn, "SELECT * FROM lomba ORDER BY id_lomba DESC");
     .action-btn { border: none; border-radius: 8px; padding: 6px 10px; font-size: 11px; font-weight: 700; text-decoration: none; display: inline-block; }
     .edit-btn { background: #dbeafe; color: #1d4ed8; }
     .delete-btn { background: #fee2e2; color: #b91c1c; }
+    
     .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.55); z-index: 9999; align-items: center; justify-content: center; padding: 20px; overflow-y: auto;}
     .modal-box { background: white; border-radius: 22px; padding: 28px; width: 100%; max-width: 800px; box-shadow: var(--shadow); animation: pop 0.25s ease; margin: auto; }
     @keyframes pop { from { transform: scale(0.94); opacity: 0; } to { transform: scale(1); opacity: 1; } }
     .modal-box label { font-size: 12px; font-weight: 600; color: #334155; margin-bottom: 5px; }
     .form-control, .form-select { border-radius: 10px; font-size: 13px; border: 1px solid #cbd5e1; }
     .btn-gradient { background: linear-gradient(90deg, var(--blue), var(--teal)); color: white; border: none; border-radius: 12px; padding: 12px 16px; font-weight: 700; width: 100%; margin-top: 15px; }
-    @media (max-width: 991px) { .sidebar { position: static; width: 100%; height: auto; } .main-content { margin-left: 0; width: 100%; padding: 20px; } }
+    @media (max-width: 991px) { .sidebar { position: static; width: 100%; height: auto; } .logout { margin-top: 20px; } .admin-wrapper { flex-direction: column; } .main-content { margin-left: 0; width: 100%; padding: 20px; } }
   </style>
 </head>
 <body>
@@ -146,9 +154,25 @@ $list_lomba = mysqli_query($conn, "SELECT * FROM lomba ORDER BY id_lomba DESC");
   <div class="admin-wrapper">
     <aside class="sidebar">
       <div class="logo-text">19JutaAdmin</div>
+      
+      <div class="menu-label">Navigasi Utama</div>
       <a href="adminDashboard.php" class="menu-item">📊 Dashboard</a>
+      
+      <div class="menu-label">Manajemen Data</div>
       <a href="halamanKelolaLomba.php" class="menu-item active">🏆 Kelola Lomba</a>
-      <a href="halamanVerifikasi.php" class="menu-item">✅ Verifikasi Iklan</a>
+      <a href="halamanKelolaBeasiswa.php" class="menu-item">🎓 Kelola Beasiswa</a>
+      <a href="halamanKelolaTempat.php" class="menu-item">📍 Kelola Tempat / Peta</a>
+      <a href="halamanKelolaTransaksi.php" class="menu-item">💳 Kelola Transaksi</a>
+      
+      <div class="menu-label">Sistem Validasi</div>
+      <a href="halamanVerifikasi.php" class="menu-item" id="menu-verif-sidebar">
+        ✅ Verifikasi Iklan 
+        <span id="badge-notif" class="badge bg-danger ms-auto" style="display: none; font-size: 11px; border-radius: 50%;">0</span>
+      </a>
+
+      <div class="menu-label">Pengaturan</div>
+      <a href="halamanKelolaUser.php" class="menu-item">👥 Kelola Pengguna</a>
+      <a href="logout.php" class="menu-item logout">🚪 Logout</a>
     </aside>
 
     <main class="main-content">
@@ -193,7 +217,12 @@ $list_lomba = mysqli_query($conn, "SELECT * FROM lomba ORDER BY id_lomba DESC");
                   <span class="badge bg-primary"><?= htmlspecialchars($l['kategori'] ?? '-') ?></span>
                   <div class="mt-1 small text-muted"><?= htmlspecialchars($l['tingkat_lomba'] ?? '-') ?></div>
                 </td>
-                <td class="fw-semibold text-danger"><?= htmlspecialchars($l['deadline'] ?? '-') ?></td>
+                <td class="fw-semibold text-danger">
+                  <?= htmlspecialchars($l['deadline'] ?? '-') ?>
+                  <?php if(strtotime($l['deadline']) < strtotime(date('Y-m-d'))): ?>
+                    <div class="mt-1"><span class="badge bg-secondary" style="font-size: 10px;">Berakhir</span></div>
+                  <?php endif; ?>
+                </td>
                 <td>
                   <div class="fw-semibold"><?= htmlspecialchars($l['tipe_biaya'] ?? '-') ?></div>
                   <small class="text-muted">Rp <?= number_format($l['biaya'] ?? 0, 0, ',', '.') ?></small>
@@ -253,13 +282,17 @@ $list_lomba = mysqli_query($conn, "SELECT * FROM lomba ORDER BY id_lomba DESC");
           <div class="col-md-4 mb-3">
             <label>Kategori</label>
             <select name="kategori" id="modalKategori" class="form-select" required>
-              <option value="Akademik">Akademik</option><option value="Desain">Desain</option><option value="Teknologi">Teknologi</option><option value="Esai">Esai</option><option value="Bisnis">Bisnis</option>
+              <option value="Akademik">Akademik</option>
+              <option value="Non Akademik">Non Akademik</option>
             </select>
           </div>
           <div class="col-md-4 mb-3">
             <label>Tingkat Lomba</label>
             <select name="tingkat_lomba" id="modalTingkat" class="form-select" required>
-              <option value="Sekolah">Sekolah / Instansi</option><option value="Regional">Regional / Provinsi</option><option value="Nasional">Nasional</option><option value="Internasional">Internasional</option>
+              <option value="Kabupaten / Kota">Kabupaten / Kota</option>
+              <option value="Provinsi">Provinsi</option>
+              <option value="Nasional">Nasional</option>
+              <option value="Internasional">Internasional</option>
             </select>
           </div>
           <div class="col-md-4 mb-3"><label>Deadline</label><input type="date" name="deadline" id="modalDeadline" class="form-control" required></div>
@@ -280,6 +313,21 @@ $list_lomba = mysqli_query($conn, "SELECT * FROM lomba ORDER BY id_lomba DESC");
     </div>
   </div>
 
+  <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 10000;">
+    <div id="notificationToast" class="toast align-items-center text-white bg-primary border-0" role="alert" aria-live="assertive" aria-atomic="true">
+      <div class="d-flex">
+        <div class="toast-body">
+          🔔 <strong>Pemberitahuan Baru!</strong> Ada iklan lomba baru yang menunggu verifikasi kamu.
+        </div>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+      </div>
+      <div class="toast-footer bg-light p-2 text-end rounded-bottom">
+          <a href="halamanVerifikasiIklan.php" class="btn btn-sm btn-outline-primary" style="font-size: 11px; font-weight: bold;">Cek Sekarang</a>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script>
     function openEditModal(id, judul, penyelenggara, kategori, tingkat, deadline, tipe_biaya, biaya, deskripsi, poster_path) {
       document.getElementById('modalId').value = id;
@@ -292,9 +340,8 @@ $list_lomba = mysqli_query($conn, "SELECT * FROM lomba ORDER BY id_lomba DESC");
       document.getElementById('modalBiaya').value = biaya;
       document.getElementById('modalDeskripsi').value = deskripsi;
       
-      // Update Preview Poster Lama di Modal
       document.getElementById('modalPreviewPoster').src = 'uploads/' + poster_path;
-      document.getElementById('modalInputPoster').value = ''; // Reset input file jika terbuka lagi
+      document.getElementById('modalInputPoster').value = ''; 
 
       cekTipeBiaya();
       document.getElementById('editModal').style.display = 'flex';
@@ -302,11 +349,46 @@ $list_lomba = mysqli_query($conn, "SELECT * FROM lomba ORDER BY id_lomba DESC");
 
     function closeModal() { document.getElementById('editModal').style.display = 'none'; }
 
+    // Logic input readOnly jika gratis
     function cekTipeBiaya() {
       let tipe = document.getElementById('modalTipeBiaya').value;
       let inputBiaya = document.getElementById('modalBiaya');
       if(tipe === 'Gratis') { inputBiaya.value = 0; inputBiaya.readOnly = true; } else { inputBiaya.readOnly = false; }
     }
+
+    // REAL-TIME NOTIFICATION SYSTEM
+    let lastPendingCount = <?= $total_menunggu ?>; 
+
+    function periksaLombaBaru() {
+        fetch('penghubung.php?aksi=cek_notif')
+            .then(response => response.json())
+            .then(data => {
+                let currentPending = data.total_pending;
+                let badge = document.getElementById('badge-notif');
+
+                // A. Update angka Badge Merah di Sidebar
+                if (currentPending > 0) {
+                    badge.textContent = currentPending;
+                    badge.style.display = 'inline-block';
+                } else {
+                    badge.style.display = 'none';
+                }
+
+                // B. Tampilkan Pop-up Toast JIKA ada data pengajuan baru masuk
+                if (currentPending > lastPendingCount) {
+                    let toastEl = document.getElementById('notificationToast');
+                    let toast = new bootstrap.Toast(toastEl);
+                    toast.show();
+                }
+
+                lastPendingCount = currentPending;
+            })
+            .catch(error => console.error('Gagal mengambil data notifikasi:', error));
+    }
+
+    // Jalankan pengecekan real-time langsung & berulang tiap 5 detik
+    periksaLombaBaru();          
+    setInterval(periksaLombaBaru, 5000); 
   </script>
 </body>
 </html>

@@ -124,4 +124,23 @@ if (isset($_POST['login'])) {
     header("Location: halamanLogin.php?pesan=gagal");
     exit();
 }
+// =======================================================
+// 4. [BARU] ENDPOINT API UNTUK CEK NOTIFIKASI ADMIN via AJAX
+// =======================================================
+if (isset($_GET['aksi']) && $_GET['aksi'] === 'cek_notif') {
+    // Set response sebagai JSON
+    header('Content-Type: application/json');
+    
+    // Hitung iklan lomba yang statusnya masih 'menunggu'
+    // Catatan: sesuaikan nama kolom 'status_verifikasi' jika berbeda di databasemu
+    $query_notif = mysqli_query($koneksi, "SELECT COUNT(*) as total FROM iklan_lomba WHERE status_verifikasi = 'menunggu'");
+    
+    if ($query_notif) {
+        $data_notif = mysqli_fetch_assoc($query_notif);
+        echo json_encode(['total_pending' => (int)$data_notif['total']]);
+    } else {
+        echo json_encode(['total_pending' => 0, 'error' => mysqli_error($koneksi)]);
+    }
+    exit(); // WAJIB ada agar kode HTML/proses lain di bawahnya tidak ikut tereksekusi
+}
 ?>

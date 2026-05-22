@@ -144,11 +144,17 @@ $list_verif = mysqli_query($conn, $query_verif);
     <aside class="sidebar">
       <div class="logo-text">19JutaAdmin</div>
       <div class="menu-label">Menu Admin</div>
+      
       <a class="menu-item active" onclick="showSection('dashboard', this)">📊 Dashboard</a>
       <a class="menu-item" onclick="showSection('lomba', this)" href="halamankelolaLomba.php">🏆 Kelola Lomba</a>
       <a class="menu-item" onclick="showSection('beasiswa', this)">🎓 Kelola Beasiswa</a>
       <a class="menu-item" onclick="showSection('tempat', this)">📍 Kelola Tempat</a>
-      <a class="menu-item" onclick="showSection('verifikasi', this)" href="halamanVerifikasi.php">✅ Verifikasi Iklan</a>
+      
+      <a class="menu-item" id="menu-verif-sidebar" onclick="showSection('verifikasi', this)">
+        ✅ Verifikasi Iklan 
+        <span id="badge-notif" class="badge bg-danger ms-auto" style="display: none; font-size: 11px; border-radius: 50%;">0</span>
+      </a>
+      
       <a href="logout.php" class="menu-item logout">🚪 Logout</a>
     </aside>
 
@@ -310,6 +316,20 @@ $list_verif = mysqli_query($conn, $query_verif);
     </div>
   </div>
 
+<div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 10000;">
+  <div id="notificationToast" class="toast align-items-center text-white bg-primary border-0" role="alert" aria-live="assertive" aria-atomic="true">
+    <div class="d-flex">
+      <div class="toast-body">
+        🔔 <strong>Pemberitahuan Baru!</strong> Ada iklan lomba baru yang menunggu verifikasi kamu.
+      </div>
+      <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+    </div>
+    <div class="toast-footer bg-light p-2 text-end rounded-bottom">
+        <button onclick="bukaTabVerifikasi()" class="btn btn-sm btn-outline-primary" style="font-size: 11px; font-weight: bold;">Cek Sekarang</button>
+    </div>
+  </div>
+</div>
+
   <script>
     function showSection(sectionId, element) {
       const sections = document.querySelectorAll('.tab-content-section');
@@ -331,6 +351,58 @@ $list_verif = mysqli_query($conn, $query_verif);
     function closeModal() {
       document.getElementById('adminModal').style.display = 'none';
     }
+
+    function bukaTabVerifikasi() {
+        let menuVerif = document.getElementById('menu-verif-sidebar');
+        if (menuVerif) {
+            showSection('verifikasi', menuVerif);
+            
+            // Sembunyikan pop-up setelah diklik
+            let toastEl = document.getElementById('notificationToast');
+            let bootstrapToast = bootstrap.Toast.getInstance(toastEl);
+            if (bootstrapToast) bootstrapToast.hide();
+        }
+    }
+
+    
+    
+    // 1. Ambil jumlah data dari PHP saat halaman pertama kali dimuat
+    let lastPendingCount = <?= $total_menunggu ?>; 
+
+    // 2. Fungsi untuk mengecek data baru ke database (AJAX)
+    function periksaLombaBaru() {
+        fetch('penghubung.php?aksi=cek_notif')
+            .then(response => response.json())
+            .then(data => {
+                let currentPending = data.total_pending;
+                let badge = document.getElementById('badge-notif');
+
+                // A. Update angka Badge Merah di Sidebar
+                if (currentPending > 0) {
+                    badge.textContent = currentPending;
+                    badge.style.display = 'inline-block';
+                } else {
+                    badge.style.display = 'none';
+                }
+
+                // B. Tampilkan Pop-up Toast JIKA ada data yang BERTAMBAH
+                if (currentPending > lastPendingCount) {
+                    let toastEl = document.getElementById('notificationToast');
+                    let toast = new bootstrap.Toast(toastEl);
+                    toast.show();
+                }
+
+                // C. Simpan angka terbaru ke memori browser
+                lastPendingCount = currentPending;
+            })
+            .catch(error => console.error('Gagal mengambil data notifikasi:', error));
+    }
+
+    // =======================================================
+
+    // Jalankan fungsi
+    periksaLombaBaru();          // Cek langsung saat halaman dibuka pertama kali
+    setInterval(periksaLombaBaru, 5000); // Ulangi pengecekan otomatis setiap 5 detik
   </script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
