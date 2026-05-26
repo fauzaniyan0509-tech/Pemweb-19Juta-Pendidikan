@@ -3,22 +3,17 @@
 session_start();
 
 // =======================================================
-// 1. KONEKSI UTAMA DATABASE
+// 1. KONEKSI UTAMA DATABASE (TERHUBUNG KE KONEKSI.PHP)
 // =======================================================
-$host = "localhost";
-$user = "root";
-$pass = "";
-$db   = "19juta_pendidikan";
+include 'koneksi.php'; 
 
-$koneksi = mysqli_connect($host, $user, $pass, $db);
-
-if (!$koneksi) {
-    die("Koneksi database gagal: " . mysqli_connect_error());
-}
+// Jembatan variabel: karena koneksi.php pakai $conn, sedangkan 
+// kode di bawah menggunakan $koneksi, kita samakan nilainya di sini
+$koneksi = $conn; 
 
 
 // =======================================================
-// 2. LOGIKA PROSES REGISTRASI USER (SEKARANG OTOMATIS LOGIN)
+// 2. LOGIKA PROSES REGISTRASI USER (OTOMATIS LOGIN)
 // =======================================================
 if (isset($_POST['daftar'])) {
     
@@ -71,17 +66,17 @@ if (isset($_POST['daftar'])) {
     $simpan = mysqli_query($koneksi, $query);
 
     if ($simpan) {
-        // [BARU] Ambil ID user yang baru saja digenerate oleh AUTO_INCREMENT database
+        // Ambil ID user yang baru saja digenerate oleh AUTO_INCREMENT database
         $id_user_baru = mysqli_insert_id($koneksi);
 
-        // [BARU] Langsung buat session agar statusnya otomatis masuk (Login)
+        // Langsung buat session agar statusnya otomatis masuk (Login)
         $_SESSION['id_user']      = $id_user_baru;
-        $_SESSION['nama']         = $nama_input; // Menggunakan nama asli sebelum di-escape
+        $_SESSION['nama']         = $nama_input; 
         $_SESSION['email']        = $email;
         $_SESSION['foto_profil']  = $nama_foto;
         $_SESSION['status_login'] = "sudah_login";
 
-        // [BARU] Alihkan langsung ke halaman beranda tanpa lewat login dulu
+        // Alihkan langsung ke halaman beranda tanpa lewat login dulu
         header("Location: beranda.php");
         exit();
         
@@ -92,7 +87,7 @@ if (isset($_POST['daftar'])) {
 
 
 // =======================================================
-// 3. LOGIKA PROSES LOGIN USER (Tetap sama seperti sebelumnya)
+// 3. LOGIKA PROSES LOGIN USER
 // =======================================================
 if (isset($_POST['login'])) {
     
@@ -124,16 +119,22 @@ if (isset($_POST['login'])) {
     header("Location: halamanLogin.php?pesan=gagal");
     exit();
 }
+
+
 // =======================================================
-// 4. [BARU] ENDPOINT API UNTUK CEK NOTIFIKASI ADMIN via AJAX
+// 4. ENDPOINT API UNTUK CEK NOTIFIKASI ADMIN via AJAX (DIPERBARUI)
 // =======================================================
 if (isset($_GET['aksi']) && $_GET['aksi'] === 'cek_notif') {
-    // Set response sebagai JSON
     header('Content-Type: application/json');
     
-    // Hitung iklan lomba yang statusnya masih 'menunggu'
-    // Catatan: sesuaikan nama kolom 'status_verifikasi' jika berbeda di databasemu
-    $query_notif = mysqli_query($koneksi, "SELECT COUNT(*) as total FROM iklan_lomba WHERE status_verifikasi = 'menunggu'");
+    // Query matematika SQL langsung menjumlahkan baris 'menunggu' dari kedua tabel iklan
+    $sql_gabungan = "
+        SELECT 
+            (SELECT COUNT(*) FROM iklan_lomba WHERE status_verifikasi = 'menunggu') + 
+            (SELECT COUNT(*) FROM iklan_beasiswa WHERE status_verifikasi = 'menunggu') 
+        AS total";
+        
+    $query_notif = mysqli_query($koneksi, $sql_gabungan);
     
     if ($query_notif) {
         $data_notif = mysqli_fetch_assoc($query_notif);
@@ -141,6 +142,6 @@ if (isset($_GET['aksi']) && $_GET['aksi'] === 'cek_notif') {
     } else {
         echo json_encode(['total_pending' => 0, 'error' => mysqli_error($koneksi)]);
     }
-    exit(); // WAJIB ada agar kode HTML/proses lain di bawahnya tidak ikut tereksekusi
+    exit(); 
 }
 ?>

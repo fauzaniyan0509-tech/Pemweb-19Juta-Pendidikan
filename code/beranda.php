@@ -78,7 +78,7 @@ if (!empty($_SESSION['foto_profil'])) {
                 </div>
 
                 <div class="col-md-4">
-                    <a href="beasiswa.php" class="feature-link">
+                    <a href="halamanBeasiswa.php" class="feature-link">
                         <div class="feature-card h-100 bg-white shadow-sm border-0 rounded-4 p-3">
                             <img src="gambar-beasiswa.jpg" alt="Beasiswa" class="img-feature mb-4 w-100 rounded-3">
                             <h3 class="feature-title">Info Beasiswa</h3>

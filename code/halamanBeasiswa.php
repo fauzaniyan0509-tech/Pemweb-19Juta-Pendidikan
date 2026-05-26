@@ -1,3 +1,7 @@
+<?php
+// Memastikan file koneksi database terhubung
+require_once 'koneksi.php'; 
+?>
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -201,6 +205,8 @@
       overflow: hidden;
       transition: 0.25s ease;
       height: 100%;
+      display: flex;
+      flex-direction: column;
     }
 
     .scholarship-card:hover {
@@ -209,13 +215,24 @@
     }
 
     .scholarship-img {
-      height: 170px;
+      height: 280px; 
       background: linear-gradient(135deg, #dbeafe, #ccfbf1);
       display: flex;
       align-items: center;
       justify-content: center;
       font-size: 52px;
       position: relative;
+      overflow: hidden; 
+    }
+
+    .poster-beasiswa {
+      width: 100%;
+      height: 100%;
+      object-fit: cover; 
+      position: absolute;
+      top: 0;
+      left: 0;
+      border-radius: 20px 20px 0 0;
     }
 
     .badge-level {
@@ -229,6 +246,7 @@
       padding: 7px 11px;
       border-radius: 999px;
       box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+      z-index: 2;
     }
 
     .badge-funding {
@@ -242,10 +260,14 @@
       font-size: 11px;
       padding: 7px 11px;
       border-radius: 999px;
+      z-index: 2;
     }
 
     .scholarship-body {
       padding: 22px;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
     }
 
     .scholarship-title {
@@ -260,11 +282,25 @@
       margin-bottom: 14px;
     }
 
+    /* Penyesuaian Deskripsi agar Rapi & Terpotong Otomatis jika terlalu panjang */
+    .scholarship-desc {
+      font-size: 13px;
+      color: #4b5563;
+      margin-bottom: 16px;
+      display: -webkit-box;
+      -webkit-line-clamp: 2; /* Batasi maksimal hanya keluar 2 baris teks */
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      line-height: 1.6;
+    }
+
     .meta-row {
       display: flex;
       gap: 10px;
       flex-wrap: wrap;
       margin-bottom: 14px;
+      margin-top: auto; /* Mendorong meta & tombol ke bawah agar tingginya presisi seimbang */
     }
 
     .meta-pill {
@@ -300,13 +336,6 @@
       text-align: center;
     }
 
-    .footer-box {
-      margin-top: 50px;
-      padding: 28px;
-      text-align: center;
-      color: var(--muted);
-    }
-
     @media (max-width: 991px) {
       .filter-card {
         position: static;
@@ -339,11 +368,9 @@
 
       <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
         <ul class="navbar-nav align-items-center gap-lg-4">
-          <li class="nav-item"><a class="nav-link" href="#">Beranda</a></li>
-          <li class="nav-item"><a class="nav-link" href="#">Lomba</a></li>
-          <li class="nav-item"><a class="nav-link active" href="#">Beasiswa</a></li>
-          <li class="nav-item"><a class="nav-link" href="#">Peta Edukasi</a></li>
-          <li class="nav-item"><a class="btn-gradient" href="#">Publikasi Lomba</a></li>
+          <li class="nav-item"><a class="nav-link" href="beranda.php">Beranda</a></li>
+          <li class="nav-item"><a class="nav-link active" href="halamanBeasiswa.php">Beasiswa</a></li>
+          <li class="nav-item"><a class="btn-gradient" href="halamanTransaksiBeasiswa.php">Publikasi Beasiswa</a></li>
         </ul>
       </div>
     </div>
@@ -357,7 +384,7 @@
       </p>
 
       <div class="search-hero">
-        <input type="text" id="heroSearch" placeholder="Cari beasiswa, penyelenggara, atau jenjang...">
+        <input type="text" id="heroSearch" placeholder="Cari beasiswa, penyelenggara, atau jenjang..." onkeyup="filterScholarships()">
         <button onclick="filterScholarships()">Cari Beasiswa</button>
       </div>
     </div>
@@ -372,17 +399,18 @@
 
           <div class="mb-4">
             <label>Cari Nama Beasiswa</label>
-            <input type="text" class="form-control" id="sideSearch" placeholder="Contoh: LPDP">
+            <input type="text" class="form-control" id="sideSearch" placeholder="Contoh: LPDP" onkeyup="filterScholarships()">
           </div>
 
           <div class="mb-4">
             <label>Jenjang Pendidikan</label>
-            <select class="form-select" id="levelFilter">
+            <select class="form-select" id="levelFilter" onchange="filterScholarships()">
               <option value="all">Semua Jenjang</option>
               <option value="SMA/SMK">SMA/SMK</option>
-              <option value="S1">S1</option>
+              <option value="D3/D4/S1">D3/D4/S1</option>
               <option value="S2">S2</option>
               <option value="S3">S3</option>
+              <option value="Umum">Umum</option>
             </select>
           </div>
 
@@ -390,18 +418,23 @@
             <label>Tipe Pendanaan</label>
 
             <div class="radio-item">
-              <input type="radio" name="funding" value="all" checked>
+              <input type="radio" name="funding" value="all" checked onchange="filterScholarships()">
               <span>Semua</span>
             </div>
 
             <div class="radio-item">
-              <input type="radio" name="funding" value="Fully Funded">
+              <input type="radio" name="funding" value="Fully Funded" onchange="filterScholarships()">
               <span>Fully Funded</span>
             </div>
 
             <div class="radio-item">
-              <input type="radio" name="funding" value="Partial Funding">
-              <span>Partial Funding</span>
+              <input type="radio" name="funding" value="Partial Funded" onchange="filterScholarships()">
+              <span>Partial Funded</span>
+            </div>
+            
+            <div class="radio-item">
+              <input type="radio" name="funding" value="Bantuan Dana / One-Time Stipend" onchange="filterScholarships()">
+              <span>Bantuan Dana / One-Time Stipend</span>
             </div>
           </div>
 
@@ -414,158 +447,67 @@
         <div class="section-heading">
           <div>
             <h2>Daftar Beasiswa</h2>
-            <p class="result-count mb-0" id="resultText">Menampilkan 6 beasiswa</p>
+            <p class="result-count mb-0" id="resultText">Memuat data...</p>
           </div>
         </div>
 
         <div class="row g-4" id="scholarshipGrid">
+          <?php
+          // Mengambil data yang status_verifikasinya 'disetujui' dan deadline masih berlaku
+          $query_string = "SELECT b.* FROM beasiswa b 
+                           JOIN iklan_beasiswa i ON b.id_beasiswa = i.id_beasiswa 
+                           WHERE i.status_verifikasi = 'disetujui' AND b.deadline >= CURDATE()";
+          
+          $list_beasiswa = mysqli_query($conn, $query_string);
 
-          <div class="col-md-6 scholarship-item" data-title="Beasiswa Talenta Indonesia" data-level="S1" data-funding="Fully Funded">
-            <div class="card-custom scholarship-card">
-              <div class="scholarship-img">
-                🎓
-                <span class="badge-level">S1</span>
-                <span class="badge-funding">Fully Funded</span>
-              </div>
-              <div class="scholarship-body">
-                <h4 class="scholarship-title">Beasiswa Talenta Indonesia</h4>
-                <p class="organizer">Kementerian Pendidikan</p>
+          if ($list_beasiswa && mysqli_num_rows($list_beasiswa) > 0) {
+              while ($row = mysqli_fetch_assoc($list_beasiswa)) {
+                  $file_poster = !empty($row['poster']) ? $row['poster'] : '';
+                  $judul_tampil = $row['nama_beasiswa']; 
+          ?>
+              <div class="col-md-6 scholarship-item" 
+                data-title="<?= htmlspecialchars(strtolower($judul_tampil)) ?>" 
+                data-level="<?= htmlspecialchars($row['jenjang']) ?>" 
+                data-funding="<?= htmlspecialchars($row['tipe_pendanaan']) ?>">
+                
+                <div class="card-custom scholarship-card">
+                  <div class="scholarship-img">
+                    <?php if (!empty($file_poster)): ?>
+                      <img src="uploads/<?= htmlspecialchars($file_poster) ?>" alt="Poster <?= htmlspecialchars($judul_tampil) ?>" class="poster-beasiswa">
+                    <?php else: ?>
+                      🎓 
+                    <?php endif; ?>
 
-                <div class="meta-row">
-                  <span class="meta-pill">Nasional</span>
-                  <span class="meta-pill">Mahasiswa</span>
+                    <span class="badge-level"><?= htmlspecialchars($row['jenjang']) ?></span>
+                    <span class="badge-funding"><?= htmlspecialchars($row['tipe_pendanaan']) ?></span>
+                  </div>
+                  <div class="scholarship-body">
+                    <h4 class="scholarship-title"><?= htmlspecialchars($judul_tampil) ?></h4>
+                    <p class="organizer"><?= htmlspecialchars($row['penyelenggara']) ?></p>
+
+                    <p class="scholarship-desc">
+                      <?= !empty($row['deskripsi']) ? htmlspecialchars($row['deskripsi']) : 'Tidak ada deskripsi tambahan untuk program beasiswa ini.' ?>
+                    </p>
+
+                    <div class="meta-row">
+                      <span class="meta-pill"><?= htmlspecialchars($row['tingkat_beasiswa']) ?></span>
+                    </div>
+
+                    <div class="deadline-box">
+                      ⏰ Deadline: <?= ($row['deadline'] && $row['deadline'] != '0000-00-00') ? date('d F Y', strtotime($row['deadline'])) : 'Tanpa Deadline' ?>
+                    </div>
+
+                    <a href="detailBeasiswa.php?id=<?= $row['id_beasiswa'] ?>" class="detail-btn">Lihat Detail</a>
+                  </div>
                 </div>
-
-                <div class="deadline-box">Deadline: 2 Mei 2026</div>
-
-                <a href="#" class="detail-btn">Lihat Detail</a>
               </div>
-            </div>
-          </div>
-
-          <div class="col-md-6 scholarship-item" data-title="Beasiswa Unggulan Pelajar" data-level="SMA/SMK" data-funding="Partial Funding">
-            <div class="card-custom scholarship-card">
-              <div class="scholarship-img">
-                📚
-                <span class="badge-level">SMA/SMK</span>
-                <span class="badge-funding">Partial Funding</span>
-              </div>
-              <div class="scholarship-body">
-                <h4 class="scholarship-title">Beasiswa Unggulan Pelajar</h4>
-                <p class="organizer">Yayasan Pendidikan Nusantara</p>
-
-                <div class="meta-row">
-                  <span class="meta-pill">Pelajar</span>
-                  <span class="meta-pill">Akademik</span>
-                </div>
-
-                <div class="deadline-box">Deadline: 18 Juni 2026</div>
-
-                <a href="#" class="detail-btn">Lihat Detail</a>
-              </div>
-            </div>
-          </div>
-
-          <div class="col-md-6 scholarship-item" data-title="Beasiswa Prestasi Digital" data-level="S1" data-funding="Fully Funded">
-            <div class="card-custom scholarship-card">
-              <div class="scholarship-img">
-                💻
-                <span class="badge-level">S1</span>
-                <span class="badge-funding">Fully Funded</span>
-              </div>
-              <div class="scholarship-body">
-                <h4 class="scholarship-title">Beasiswa Prestasi Digital</h4>
-                <p class="organizer">Indonesia Digital Foundation</p>
-
-                <div class="meta-row">
-                  <span class="meta-pill">Teknologi</span>
-                  <span class="meta-pill">Online</span>
-                </div>
-
-                <div class="deadline-box">Deadline: 30 Juli 2026</div>
-
-                <a href="#" class="detail-btn">Lihat Detail</a>
-              </div>
-            </div>
-          </div>
-
-          <div class="col-md-6 scholarship-item" data-title="Beasiswa Pemimpin Muda" data-level="S2" data-funding="Partial Funding">
-            <div class="card-custom scholarship-card">
-              <div class="scholarship-img">
-                🌍
-                <span class="badge-level">S2</span>
-                <span class="badge-funding">Partial Funding</span>
-              </div>
-              <div class="scholarship-body">
-                <h4 class="scholarship-title">Beasiswa Pemimpin Muda</h4>
-                <p class="organizer">Global Youth Education</p>
-
-                <div class="meta-row">
-                  <span class="meta-pill">Leadership</span>
-                  <span class="meta-pill">Internasional</span>
-                </div>
-
-                <div class="deadline-box">Deadline: 12 Agustus 2026</div>
-
-                <a href="#" class="detail-btn">Lihat Detail</a>
-              </div>
-            </div>
-          </div>
-
-          <div class="col-md-6 scholarship-item" data-title="Beasiswa Riset Indonesia" data-level="S3" data-funding="Fully Funded">
-            <div class="card-custom scholarship-card">
-              <div class="scholarship-img">
-                🔬
-                <span class="badge-level">S3</span>
-                <span class="badge-funding">Fully Funded</span>
-              </div>
-              <div class="scholarship-body">
-                <h4 class="scholarship-title">Beasiswa Riset Indonesia</h4>
-                <p class="organizer">Lembaga Riset Nasional</p>
-
-                <div class="meta-row">
-                  <span class="meta-pill">Riset</span>
-                  <span class="meta-pill">Doktoral</span>
-                </div>
-
-                <div class="deadline-box">Deadline: 5 September 2026</div>
-
-                <a href="#" class="detail-btn">Lihat Detail</a>
-              </div>
-            </div>
-          </div>
-
-          <div class="col-md-6 scholarship-item" data-title="Beasiswa Kreatif Nusantara" data-level="S1" data-funding="Partial Funding">
-            <div class="card-custom scholarship-card">
-              <div class="scholarship-img">
-                🎨
-                <span class="badge-level">S1</span>
-                <span class="badge-funding">Partial Funding</span>
-              </div>
-              <div class="scholarship-body">
-                <h4 class="scholarship-title">Beasiswa Kreatif Nusantara</h4>
-                <p class="organizer">Creative Education Center</p>
-
-                <div class="meta-row">
-                  <span class="meta-pill">Seni</span>
-                  <span class="meta-pill">Kreatif</span>
-                </div>
-
-                <div class="deadline-box">Deadline: 21 Oktober 2026</div>
-
-                <a href="#" class="detail-btn">Lihat Detail</a>
-              </div>
-            </div>
-          </div>
-
+          <?php
+              } 
+          } else {
+              echo "<div class='col-12 text-center py-5'><h5 class='text-muted'>Belum ada beasiswa aktif yang disetujui.</h5></div>";
+          }
+          ?>
         </div>
-
-        <div class="card-custom footer-box">
-          <h5 class="fw-bold mb-2">Tidak menemukan beasiswa yang cocok?</h5>
-          <p class="mb-3">Pantau terus halaman ini karena informasi beasiswa akan diperbarui secara berkala.</p>
-          <a href="#" class="btn-gradient">Kembali ke Beranda</a>
-        </div>
-
       </div>
     </div>
   </main>
@@ -574,19 +516,20 @@
     function filterScholarships() {
       const heroSearch = document.getElementById('heroSearch').value.toLowerCase();
       const sideSearch = document.getElementById('sideSearch').value.toLowerCase();
+      const searchText = heroSearch || sideSearch;
+
       const level = document.getElementById('levelFilter').value;
       const funding = document.querySelector('input[name="funding"]:checked').value;
+      
       const items = document.querySelectorAll('.scholarship-item');
       let visibleCount = 0;
-
-      const searchText = heroSearch || sideSearch;
 
       items.forEach(item => {
         const title = item.dataset.title.toLowerCase();
         const itemLevel = item.dataset.level;
         const itemFunding = item.dataset.funding;
 
-        const matchSearch = title.includes(searchText);
+        const matchSearch = searchText === '' || title.includes(searchText);
         const matchLevel = level === 'all' || itemLevel === level;
         const matchFunding = funding === 'all' || itemFunding === funding;
 
@@ -606,8 +549,14 @@
       document.getElementById('sideSearch').value = '';
       document.getElementById('levelFilter').value = 'all';
       document.querySelector('input[name="funding"][value="all"]').checked = true;
+      
       filterScholarships();
     }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      const totalItems = document.querySelectorAll('.scholarship-item').length;
+      document.getElementById('resultText').textContent = `Menampilkan ${totalItems} beasiswa`;
+    });
   </script>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

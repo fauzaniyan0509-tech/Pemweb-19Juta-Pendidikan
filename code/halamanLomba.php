@@ -21,8 +21,8 @@ require_once 'koneksi.php'; // Pastikan file koneksi ada
       <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
         <ul class="navbar-nav align-items-center gap-lg-4">
           <li class="nav-item"><a class="nav-link" href="beranda.php">Beranda</a></li>
-          <li class="nav-item"><a class="nav-link active" href="#">Lomba</a></li>
-          <li class="nav-item"><a class="btn-gradient" href="halamanTransaksi.php">Publikasi Lomba</a></li>
+          <li class="nav-item"><a class="nav-link active" href="halamanLomba">Lomba</a></li>
+          <li class="nav-item"><a class="btn-gradient" href="halamanTransaksiLomba.php">Publikasi Lomba</a></li>
         </ul>
       </div>
     </div>

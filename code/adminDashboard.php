@@ -12,13 +12,17 @@ if (!$conn) {
     die("Koneksi gagal: " . mysqli_connect_error());
 }
 
-// 2. PROSES UPDATE VERIFIKASI IKLAN (SETUJUI / TOLAK)
-if (isset($_GET['action']) && isset($_GET['id_verif'])) {
+// 2. PROSES UPDATE VERIFIKASI IKLAN (SETUJUI / TOLAK) - DIKEMBANGKAN MULTI-TABEL
+if (isset($_GET['action']) && isset($_GET['id_verif']) && isset($_GET['tipe'])) {
     $id_iklan = $_GET['id_verif'];
     $action = $_GET['action'];
+    $tipe = $_GET['tipe']; // Menangkap parameter tipe (lomba/beasiswa)
     $status_baru = ($action == 'setujui') ? 'disetujui' : 'ditolak';
 
-    $stmt = $conn->prepare("UPDATE iklan_lomba SET status_verifikasi = ? WHERE id_iklan = ?");
+    // Proteksi penentuan nama tabel secara aman
+    $tabel_target = ($tipe == 'beasiswa') ? 'iklan_beasiswa' : 'iklan_lomba';
+
+    $stmt = $conn->prepare("UPDATE $tabel_target SET status_verifikasi = ? WHERE id_iklan = ?");
     $stmt->bind_param("si", $status_baru, $id_iklan);
     $stmt->execute();
     
@@ -28,14 +32,12 @@ if (isset($_GET['action']) && isset($_GET['id_verif'])) {
 
 // 3. PROSES TAMBAH DATA (LOMBA / BEASISWA / TEMPAT) VIA MODAL
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['tambah_tipe'])) {
-    // KODE YANG BENAR:
-$tipe = $_POST['tambah_tipe'];
-$nama = mysqli_real_escape_string($conn, $_POST['nama']);
-$kategori = mysqli_real_escape_string($conn, $_POST['kategori']);
-$deskripsi = mysqli_real_escape_string($conn, $_POST['deskripsi']);
+    $tipe = $_POST['tambah_tipe'];
+    $nama = mysqli_real_escape_string($conn, $_POST['nama']);
+    $kategori = mysqli_real_escape_string($conn, $_POST['kategori']);
+    $deskripsi = mysqli_real_escape_string($conn, $_POST['deskripsi']);
 
     if ($tipe == 'lomba') {
-        // Sesuaikan kolom tabel lomba Anda (contoh default minimalis)
         $query = "INSERT INTO lomba (judul_lomba, kategori, deskripsi, deadline) VALUES ('$nama', '$kategori', '$deskripsi', NOW())";
     } elseif ($tipe == 'beasiswa') {
         $query = "INSERT INTO beasiswa (nama_beasiswa, jenjang, deskripsi) VALUES ('$nama', '$kategori', '$deskripsi')";
@@ -51,7 +53,7 @@ $deskripsi = mysqli_real_escape_string($conn, $_POST['deskripsi']);
     exit();
 }
 
-// 4. LOGIKA PENGAMBILAN DATA STATISTIK
+// 4. LOGIKA PENGAMBILAN DATA STATISTIK (DIPERBARUI)
 function getCount($conn, $table, $where = "") {
     $sql = "SELECT COUNT(*) as total FROM $table";
     if ($where != "") { $sql .= " WHERE $where"; }
@@ -63,19 +65,29 @@ function getCount($conn, $table, $where = "") {
 $total_lomba = getCount($conn, 'lomba');
 $total_beasiswa = getCount($conn, 'beasiswa');
 $total_tempat = getCount($conn, 'tempat_edukatif');
-$total_menunggu = getCount($conn, "iklan_lomba", "status_verifikasi = 'menunggu'");
+
+// Menghitung akumulasi antrean dari kedua kategori iklan
+$menunggu_lomba = getCount($conn, "iklan_lomba", "status_verifikasi = 'menunggu'");
+$menunggu_beasiswa = getCount($conn, "iklan_beasiswa", "status_verifikasi = 'menunggu'");
+$total_menunggu = $menunggu_lomba + $menunggu_beasiswa;
 
 // 5. QUERY LIST DATA UNTUK TABEL-TABEL
 $list_lomba = mysqli_query($conn, "SELECT * FROM lomba ORDER BY id_lomba DESC");
 $list_beasiswa = mysqli_query($conn, "SELECT * FROM beasiswa ORDER BY id_beasiswa DESC"); 
 $list_tempat = mysqli_query($conn, "SELECT * FROM tempat_edukatif ORDER BY id_tempat DESC");
 
-// Query Verifikasi Iklan
-$query_verif = "SELECT i.id_iklan, i.judul_iklan, i.paket_langganan, i.status_verifikasi, l.judul_lomba, p.jumlah AS jumlah_bayar
-                FROM iklan_lomba i 
-                JOIN lomba l ON i.id_lomba = l.id_lomba 
-                JOIN pembayaran p ON i.id_pembayaran = p.id_pembayaran 
-                WHERE i.status_verifikasi = 'menunggu' ORDER BY i.id_iklan DESC";
+// Query Verifikasi Iklan Gabungan menggunakan UNION
+$query_verif = "
+    (SELECT i.id_iklan, i.judul_iklan, i.paket_langganan, i.status_verifikasi, p.jumlah AS jumlah_bayar, 'lomba' AS tipe
+     FROM iklan_lomba i 
+     JOIN pembayaran p ON i.id_pembayaran = p.id_pembayaran 
+     WHERE i.status_verifikasi = 'menunggu')
+    UNION
+    (SELECT i.id_iklan, i.judul_iklan, i.paket_langganan, i.status_verifikasi, p.jumlah AS jumlah_bayar, 'beasiswa' AS tipe
+     FROM iklan_beasiswa i 
+     JOIN pembayaran p ON i.id_pembayaran = p.id_pembayaran 
+     WHERE i.status_verifikasi = 'menunggu')
+    ORDER BY id_iklan DESC";
 $list_verif = mysqli_query($conn, $query_verif);
 ?>
 
@@ -146,11 +158,11 @@ $list_verif = mysqli_query($conn, $query_verif);
       <div class="menu-label">Menu Admin</div>
       
       <a class="menu-item active" onclick="showSection('dashboard', this)">📊 Dashboard</a>
-      <a class="menu-item" onclick="showSection('lomba', this)" href="halamankelolaLomba.php">🏆 Kelola Lomba</a>
-      <a class="menu-item" onclick="showSection('beasiswa', this)">🎓 Kelola Beasiswa</a>
+      <a class="menu-item" href="halamankelolaLomba.php">🏆 Kelola Lomba</a>
+      <a class="menu-item" href="halamankelolaBeasiswa.php">🎓 Kelola Beasiswa</a>
       <a class="menu-item" onclick="showSection('tempat', this)">📍 Kelola Tempat</a>
       
-      <a class="menu-item" id="menu-verif-sidebar" onclick="showSection('verifikasi', this)">
+      <a href="halamanVerifikasi.php" class="menu-item" id="menu-verif-sidebar">
         ✅ Verifikasi Iklan 
         <span id="badge-notif" class="badge bg-danger ms-auto" style="display: none; font-size: 11px; border-radius: 50%;">0</span>
       </a>
@@ -188,30 +200,7 @@ $list_verif = mysqli_query($conn, $query_verif);
           <div class="col-md-6 col-xl-3"><div class="stat-card"><div class="stat-icon">⏳</div><div class="stat-number text-warning"><?= $total_menunggu ?></div><p class="stat-label">Menunggu Verifikasi</p></div></div>
         </div>
         <div class="quick-note">
-          Sistem berjalan normal. Hari ini terdapat <?= $total_menunggu ?> pengajuan iklan baru yang membutuhkan konfirmasi verifikasi.
-        </div>
-      </section>
-
-      <section id="lomba" class="tab-content-section">
-        <div class="content-card">
-          <div class="section-header">
-            <h2 class="section-title">Kelola Data Lomba</h2>
-            <button class="btn-gradient" onclick="openModal('Tambah Lomba', 'lomba')">+ Tambah Lomba</button>
-          </div>
-          <div class="table-responsive">
-            <table class="table">
-              <thead><tr><th>Judul Lomba</th><th>Kategori</th><th>Deskripsi</th></tr></thead>
-              <tbody>
-                <?php while($l = mysqli_fetch_assoc($list_lomba)): ?>
-                <tr>
-                  <td><?= htmlspecialchars($l['judul_lomba']) ?></td>
-                  <td><span class="badge bg-primary rounded-pill"><?= htmlspecialchars($l['kategori'] ?? 'Umum') ?></span></td>
-                  <td><?= substr(htmlspecialchars($l['deskripsi'] ?? '-'), 0, 60) ?>...</td>
-                </tr>
-                <?php endwhile; if(mysqli_num_rows($list_lomba) == 0) echo "<tr><td colspan='3' class='text-center text-muted'>Belum ada data lomba.</td></tr>"; ?>
-              </tbody>
-            </table>
-          </div>
+          Sistem berjalan normal. Hari ini terdapat <?= $total_menunggu ?> pengajuan iklan baru (Lomba & Beasiswa) yang membutuhkan konfirmasi verifikasi.
         </div>
       </section>
 
@@ -227,7 +216,7 @@ $list_verif = mysqli_query($conn, $query_verif);
               <tbody>
                 <?php while($b = mysqli_fetch_assoc($list_beasiswa)): ?>
                 <tr>
-                  <td><?= htmlspecialchars($b['nama_beasiswa'] ?? $b['judul_beasiswa']) ?></td>
+                  <td><?= htmlspecialchars($b['nama_beasiswa'] ?? '-') ?></td>
                   <td><?= htmlspecialchars($b['jenjang'] ?? '-') ?></td>
                   <td><?= substr(htmlspecialchars($b['deskripsi'] ?? '-'), 0, 60) ?>...</td>
                 </tr>
@@ -263,20 +252,25 @@ $list_verif = mysqli_query($conn, $query_verif);
 
       <section id="verifikasi" class="tab-content-section">
         <div class="content-card">
-          <div class="section-header"><h2 class="section-title">Verifikasi Iklan Lomba</h2></div>
+          <div class="section-header"><h2 class="section-title">Verifikasi Cepat Antrean Promosi</h2></div>
           <div class="table-responsive">
             <table class="table">
-              <thead><tr><th>Judul Iklan</th><th>Paket</th><th>Pembayaran</th><th>Status</th><th>Aksi</th></tr></thead>
+              <thead><tr><th>Judul Iklan / Kategori</th><th>Paket</th><th>Pembayaran</th><th>Status</th><th>Aksi</th></tr></thead>
               <tbody>
                 <?php while ($row = mysqli_fetch_assoc($list_verif)): ?>
                 <tr>
-                  <td><?= htmlspecialchars($row['judul_iklan']); ?></td>
+                  <td>
+                    <?= htmlspecialchars($row['judul_iklan']); ?>
+                    <span class="badge <?= $row['tipe'] == 'lomba' ? 'bg-primary' : 'bg-info text-dark' ?> ms-1" style="font-size: 10px;">
+                      <?= ucfirst($row['tipe']) ?>
+                    </span>
+                  </td>
                   <td><?= htmlspecialchars($row['paket_langganan']); ?></td>
                   <td>Rp<?= number_format($row['jumlah_bayar']); ?></td>
                   <td><span class="badge-status status-review">Menunggu</span></td>
                   <td>
-                    <a href="?action=setujui&id_verif=<?= $row['id_iklan']; ?>" class="action-btn approve-btn">Setujui</a>
-                    <a href="?action=tolak&id_verif=<?= $row['id_iklan']; ?>" class="action-btn delete-btn">Tolak</a>
+                    <a href="?action=setujui&id_verif=<?= $row['id_iklan']; ?>&tipe=<?= $row['tipe']; ?>" class="action-btn approve-btn">Setujui</a>
+                    <a href="?action=tolak&id_verif=<?= $row['id_iklan']; ?>&tipe=<?= $row['tipe']; ?>" class="action-btn delete-btn">Tolak</a>
                   </td>
                 </tr>
                 <?php endwhile; if (mysqli_num_rows($list_verif) == 0): ?>
@@ -316,20 +310,6 @@ $list_verif = mysqli_query($conn, $query_verif);
     </div>
   </div>
 
-<div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 10000;">
-  <div id="notificationToast" class="toast align-items-center text-white bg-primary border-0" role="alert" aria-live="assertive" aria-atomic="true">
-    <div class="d-flex">
-      <div class="toast-body">
-        🔔 <strong>Pemberitahuan Baru!</strong> Ada iklan lomba baru yang menunggu verifikasi kamu.
-      </div>
-      <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
-    </div>
-    <div class="toast-footer bg-light p-2 text-end rounded-bottom">
-        <button onclick="bukaTabVerifikasi()" class="btn btn-sm btn-outline-primary" style="font-size: 11px; font-weight: bold;">Cek Sekarang</button>
-    </div>
-  </div>
-</div>
-
   <script>
     function showSection(sectionId, element) {
       const sections = document.querySelectorAll('.tab-content-section');
@@ -352,57 +332,29 @@ $list_verif = mysqli_query($conn, $query_verif);
       document.getElementById('adminModal').style.display = 'none';
     }
 
-    function bukaTabVerifikasi() {
-        let menuVerif = document.getElementById('menu-verif-sidebar');
-        if (menuVerif) {
-            showSection('verifikasi', menuVerif);
-            
-            // Sembunyikan pop-up setelah diklik
-            let toastEl = document.getElementById('notificationToast');
-            let bootstrapToast = bootstrap.Toast.getInstance(toastEl);
-            if (bootstrapToast) bootstrapToast.hide();
-        }
-    }
-
-    
-    
-    // 1. Ambil jumlah data dari PHP saat halaman pertama kali dimuat
     let lastPendingCount = <?= $total_menunggu ?>; 
 
-    // 2. Fungsi untuk mengecek data baru ke database (AJAX)
     function periksaLombaBaru() {
+        // CATATAN: file penghubung.php milikmu juga harus mengembalikan hasil akumulasi total (lomba + beasiswa)
         fetch('penghubung.php?aksi=cek_notif')
             .then(response => response.json())
             .then(data => {
                 let currentPending = data.total_pending;
                 let badge = document.getElementById('badge-notif');
 
-                // A. Update angka Badge Merah di Sidebar
                 if (currentPending > 0) {
                     badge.textContent = currentPending;
                     badge.style.display = 'inline-block';
                 } else {
                     badge.style.display = 'none';
                 }
-
-                // B. Tampilkan Pop-up Toast JIKA ada data yang BERTAMBAH
-                if (currentPending > lastPendingCount) {
-                    let toastEl = document.getElementById('notificationToast');
-                    let toast = new bootstrap.Toast(toastEl);
-                    toast.show();
-                }
-
-                // C. Simpan angka terbaru ke memori browser
                 lastPendingCount = currentPending;
             })
             .catch(error => console.error('Gagal mengambil data notifikasi:', error));
     }
 
-    // =======================================================
-
-    // Jalankan fungsi
-    periksaLombaBaru();          // Cek langsung saat halaman dibuka pertama kali
-    setInterval(periksaLombaBaru, 5000); // Ulangi pengecekan otomatis setiap 5 detik
+    periksaLombaBaru();          
+    setInterval(periksaLombaBaru, 5000); 
   </script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
