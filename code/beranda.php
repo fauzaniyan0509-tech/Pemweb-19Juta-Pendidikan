@@ -63,7 +63,7 @@ if (!empty($_SESSION['foto_profil'])) {
                 <div class="col-md-4">
                     <a href="peta_edukatif.php" class="feature-link">
                         <div class="feature-card h-100 bg-white shadow-sm border-0 rounded-4 p-3">
-                            <img src="gambar-peta-pendidikan-2.jpg" alt="Peta Pendidikan" class="img-feature mb-4 w-100 rounded-3">
+                            <img src="aset gambar/gambar-peta-pendidikan-2.jpg" alt="Peta Pendidikan" class="img-feature mb-4 w-100 rounded-3">
                             <h3 class="feature-title">Peta akses pendidikan</h3>
                             <p class="feature-desc text-muted">Cari sekolah, kampus, tempat belajar yang nyaman dan free wi-fi? disini tempatnya!!!</p>
                             <div class="d-flex align-items-center mt-4 pt-3 border-top">
@@ -80,7 +80,7 @@ if (!empty($_SESSION['foto_profil'])) {
                 <div class="col-md-4">
                     <a href="halamanBeasiswa.php" class="feature-link">
                         <div class="feature-card h-100 bg-white shadow-sm border-0 rounded-4 p-3">
-                            <img src="gambar-beasiswa.jpg" alt="Beasiswa" class="img-feature mb-4 w-100 rounded-3">
+                            <img src="aset gambar/gambar-beasiswa.jpg" alt="Beasiswa" class="img-feature mb-4 w-100 rounded-3">
                             <h3 class="feature-title">Info Beasiswa</h3>
                             <p class="feature-desc text-muted">Mau cari beasiswa dari yang berbayar, hingga gratis? dari yang nasional sampai internasional? klik disini yaaa....</p>
                             <div class="d-flex align-items-center mt-4 pt-3 border-top">

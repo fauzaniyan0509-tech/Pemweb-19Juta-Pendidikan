@@ -52,7 +52,7 @@
                 </div>
 
                 <div class="col-lg-6 text-center">
-                    <img src="gambar-orang-jelas.png" alt="3D Illustration" class="img-fluid hero-img float-animation">
+                    <img src="aset gambar/gambar-orang-jelas.png" alt="3D Illustration" class="img-fluid hero-img float-animation">
                 </div>
 
             </div>
