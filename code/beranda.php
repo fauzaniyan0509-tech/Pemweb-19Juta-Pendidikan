@@ -44,7 +44,7 @@ if (!empty($_SESSION['foto_profil'])) {
                     </li>
 
                     <li class="nav-item ms-lg-2 mt-3 mt-lg-0">
-                        <a href="profil.php" class="profile-nav-link d-inline-block shadow-sm">
+                        <a href="ProfilPengguna.php" class="profile-nav-link d-inline-block shadow-sm">
                             <img src="<?php echo $foto_user; ?>" alt="Profile" class="navbar-profile-img" style="width: 40px; height: 40px; object-fit: cover; border-radius: 50%;">
                         </a>
                     </li>
