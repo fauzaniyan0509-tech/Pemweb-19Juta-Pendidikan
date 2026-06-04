@@ -61,7 +61,7 @@ if (!empty($_SESSION['foto_profil'])) {
 
             <div class="row g-4">
                 <div class="col-md-4">
-                    <a href="peta_edukatif.php" class="feature-link">
+                    <a href="halamanTempatEdukatif.php" class="feature-link">
                         <div class="feature-card h-100 bg-white shadow-sm border-0 rounded-4 p-3">
                             <img src="aset gambar/gambar-peta-pendidikan-2.jpg" alt="Peta Pendidikan" class="img-feature mb-4 w-100 rounded-3">
                             <h3 class="feature-title">Peta akses pendidikan</h3>

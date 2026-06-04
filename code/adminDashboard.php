@@ -160,7 +160,7 @@ $list_verif = mysqli_query($conn, $query_verif);
       <a class="menu-item active" onclick="showSection('dashboard', this)">📊 Dashboard</a>
       <a class="menu-item" href="halamankelolaLomba.php">🏆 Kelola Lomba</a>
       <a class="menu-item" href="halamankelolaBeasiswa.php">🎓 Kelola Beasiswa</a>
-      <a class="menu-item" onclick="showSection('tempat', this)">📍 Kelola Tempat</a>
+      <a class="menu-item" href="halamanKelolaTempat.php">📍 Kelola Tempat</a>
       
       <a href="halamanVerifikasi.php" class="menu-item" id="menu-verif-sidebar">
         ✅ Verifikasi Iklan 
