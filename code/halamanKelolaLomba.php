@@ -1,5 +1,5 @@
 <?php
-session_start();
+include 'penghubung.php';
 
 // 1. KONEKSI KE DATABASE
 $host = "localhost";

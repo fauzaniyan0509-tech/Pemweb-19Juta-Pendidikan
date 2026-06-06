@@ -1,3 +1,4 @@
+<?php session_start(); ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -46,8 +47,14 @@
                         Membuka akses belajar berkualitas bagi setiap anak bangsa melalui teknologi yang inklusif dan merata
                     </p>
                     <div class="d-flex gap-3 justify-content-center justify-content-lg-start">
-                        <a href="halamanRegistrasi.php" class="btn btn-primary custom-btn-primary">Daftar</a>
-                        <a href="halamanLogin.php" class="btn btn-outline-primary custom-btn-outline">Login</a>
+                        <?php if (isset($_SESSION['status_login']) && $_SESSION['status_login'] === "sudah_login"): ?>
+                            <!-- Jika user SUDAH login, tampilkan tombol ke Beranda -->
+                            <a href="beranda.php" class="btn btn-primary custom-btn-primary">Ke Beranda</a>
+                        <?php else: ?>
+                            <!-- Jika user BELUM login, tampilkan tombol Daftar dan Login -->
+                            <a href="halamanRegistrasi.php" class="btn btn-primary custom-btn-primary">Daftar</a>
+                            <a href="halamanLogin.php" class="btn btn-outline-primary custom-btn-outline">Login</a>
+                        <?php endif; ?>
                     </div>
                 </div>
 

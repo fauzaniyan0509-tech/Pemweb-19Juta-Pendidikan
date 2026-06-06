@@ -1,5 +1,5 @@
 <?php
-session_start();
+include 'penghubung.php';
 
 // Sistem Proteksi: Jika user mencoba masuk tanpa login, langsung diusir ke halaman login
 if (!isset($_SESSION['status_login']) || $_SESSION['status_login'] !== "sudah_login") {
@@ -40,7 +40,7 @@ if (!empty($_SESSION['foto_profil'])) {
                     <li class="nav-item"><a class="nav-link" href="#">Blog</a></li>
 
                     <li class="nav-item mt-3 mt-lg-0">
-                        <a href="logout.php" class="btn btn-danger px-3 py-2">Logout</a>
+                        <a href="penghubung.php?aksi=logout" class="btn btn-danger px-3 py-2">Logout</a>
                     </li>
 
                     <li class="nav-item ms-lg-2 mt-3 mt-lg-0">

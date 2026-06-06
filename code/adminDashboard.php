@@ -1,5 +1,9 @@
 <?php
-session_start();
+include 'penghubung.php';
+if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== true) {
+    header("Location: halamanLoginAdmin.php");
+    exit();
+}
 
 // 1. KONEKSI KE DATABASE
 $host = "localhost";
@@ -167,7 +171,7 @@ $list_verif = mysqli_query($conn, $query_verif);
         <span id="badge-notif" class="badge bg-danger ms-auto" style="display: none; font-size: 11px; border-radius: 50%;">0</span>
       </a>
       
-      <a href="logout.php" class="menu-item logout">🚪 Logout</a>
+      <a href="penghubung.php?aksi=logout_admin" class="menu-item logout">🚪 Logout</a>
     </aside>
 
     <main class="main-content">

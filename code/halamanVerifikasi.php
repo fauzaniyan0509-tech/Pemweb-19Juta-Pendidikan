@@ -1,4 +1,5 @@
 <?php
+include 'penghubung.php';
 // 1. KONEKSI DATABASE & PROSES AKSI ADMIN
 $conn = mysqli_connect("localhost", "root", "", "19juta_pendidikan"); 
 

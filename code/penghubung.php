@@ -11,9 +11,49 @@ include 'koneksi.php';
 // kode di bawah menggunakan $koneksi, kita samakan nilainya di sini
 $koneksi = $conn; 
 
+// =======================================================
+// 2. FITUR KEAMANAN: AUTO LOGOUT 5 MENIT (SESSION + COOKIE)
+// =======================================================
+$timeout = 300; // 300 detik = 5 menit
+
+// Fungsi pintar untuk menentukan mau dilempar ke halaman login siapa
+function getRedirectUrl() {
+    if (isset($_SESSION['admin_logged_in'])) {
+        return "halamanLoginAdmin.php";
+    } elseif (isset($_SESSION['status_login'])) {
+        return "halamanLogin.php";
+    }
+    return "index.php"; // Fallback
+}
+
+// Cek apakah user sudah pernah aktif sebelumnya
+if (isset($_SESSION['last_activity'])) {
+    $elapsed_time = time() - $_SESSION['last_activity'];
+    
+    // Jika waktu habis ATAU cookie hilang (dihapus browser/dimanipulasi)
+    if ($elapsed_time > $timeout || !isset($_COOKIE['activity_cookie'])) {
+        $redirect = getRedirectUrl();
+        
+        // Hancurkan session dan cookie
+        session_unset();
+        session_destroy();
+        if (isset($_COOKIE['activity_cookie'])) {
+            setcookie('activity_cookie', '', time() - 3600, '/'); 
+        }
+        
+        // Lempar ke halaman login dengan pesan timeout
+        header("Location: $redirect?pesan=timeout");
+        exit();
+    }
+}
+
+// Jika lolos pengecekan, UPDATE waktu aktivitas dan cookie agar reset ke 5 menit lagi
+$_SESSION['last_activity'] = time();
+setcookie('activity_cookie', time(), time() + $timeout, '/');
+
 
 // =======================================================
-// 2. LOGIKA PROSES REGISTRASI USER (OTOMATIS LOGIN)
+// 3. LOGIKA PROSES REGISTRASI USER (OTOMATIS LOGIN)
 // =======================================================
 if (isset($_POST['daftar'])) {
     
@@ -87,7 +127,7 @@ if (isset($_POST['daftar'])) {
 
 
 // =======================================================
-// 3. LOGIKA PROSES LOGIN USER
+// 4. LOGIKA PROSES LOGIN USER
 // =======================================================
 if (isset($_POST['login'])) {
     
@@ -122,7 +162,7 @@ if (isset($_POST['login'])) {
 
 
 // =======================================================
-// 4. ENDPOINT API UNTUK CEK NOTIFIKASI ADMIN via AJAX (DIPERBARUI)
+// 5. ENDPOINT API UNTUK CEK NOTIFIKASI ADMIN via AJAX (DIPERBARUI)
 // =======================================================
 if (isset($_GET['aksi']) && $_GET['aksi'] === 'cek_notif') {
     header('Content-Type: application/json');
@@ -143,5 +183,37 @@ if (isset($_GET['aksi']) && $_GET['aksi'] === 'cek_notif') {
         echo json_encode(['total_pending' => 0, 'error' => mysqli_error($koneksi)]);
     }
     exit(); 
+}
+
+// =======================================================
+// 6. LOGIKA PROSES LOGOUT USER
+// =======================================================
+if (isset($_GET['aksi']) && $_GET['aksi'] === 'logout') {
+    
+    // Hapus semua variabel session
+    session_unset();
+    
+    // Hancurkan file session di server
+    session_destroy();
+    
+    // Alihkan pengguna kembali ke halaman landing page (index.php)
+    header("Location: index.php");
+    exit();
+}
+// =======================================================
+// 7. LOGIKA PROSES LOGOUT ADMIN
+// =======================================================
+if (isset($_GET['aksi']) && $_GET['aksi'] === 'logout_admin') {
+    
+    // Hapus semua variabel session (ini akan mereset status login admin)
+    session_unset();
+    
+    // Hancurkan file session di server
+    session_destroy();
+    
+    // Alihkan pengguna kembali ke halaman login admin 
+    // (Anda bisa menggantinya dengan "index.php" jika ingin dilempar ke landing page)
+    header("Location: halamanLoginAdmin.php");
+    exit();
 }
 ?>

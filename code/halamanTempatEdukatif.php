@@ -1,4 +1,5 @@
 <?php
+include 'penghubung.php';
 // KONEKSI DATABASE
 $host = "localhost"; $user = "root"; $pass = ""; $db = "19juta_pendidikan";
 $conn = mysqli_connect($host, $user, $pass, $db);

@@ -1,5 +1,6 @@
 <?php
-require_once 'koneksi.php'; // Pastikan file koneksi ada
+include 'penghubung.php';
+ // Pastikan file koneksi ada
 ?>
 <!DOCTYPE html>
 <html lang="id">

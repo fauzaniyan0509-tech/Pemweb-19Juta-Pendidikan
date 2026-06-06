@@ -1,6 +1,6 @@
 <?php
-// Memastikan file koneksi database terhubung
-require_once 'koneksi.php'; 
+include 'penghubung.php';
+// Memastikan file koneksi database terhubung 
 ?>
 <!DOCTYPE html>
 <html lang="id">

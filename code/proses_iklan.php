@@ -1,25 +1,22 @@
 <?php
-// 1. WAJIB JALANKAN SESSION DI BARIS PERTAMA
-// Supaya file ini bisa membaca siapa user yang sedang login
-session_start();
+// =========================================================
+// 1. PANGGIL PUSAT KENDALI (Otomatis start session, koneksi DB, dan timeout 5 menit)
+// =========================================================
+include 'penghubung.php'; 
 
-// 2. PROTEKSI: Jika user belum login tapi nekat buka halaman ini, tendang ke halaman login
+// 2. PROTEKSI: Jika user belum login, tendang ke halaman login
 if (!isset($_SESSION['id_user'])) {
     header("Location: halamanLogin.php?pesan=belum_login");
     exit();
 }
 
-// 3. GUNAKAN FILE KONEKSI YANG SUDAH KAMU BUAT
-// Kita pakai koneksi.php karena menggunakan variabel $conn (cocok dengan kode prepared statement di bawah)
-include 'koneksi.php'; 
-
-// 4. AKTIFKAN ERROR REPORTING (Untuk memunculkan eror jika database menolak data)
+// 3. AKTIFKAN ERROR REPORTING (Untuk memunculkan eror jika database menolak data)
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     
-    // 5. AMBIL ID ASLI USER DARI SESSION (Bukan angka dummy 1 lagi)
+    // 4. AMBIL ID ASLI USER DARI SESSION
     $id_user_aktif = $_SESSION['id_user']; 
 
     // Ambil data umum dari form transaksi
@@ -29,6 +26,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $judul_iklan       = $_POST['judul_iklan'];
     $metode_pembayaran = $_POST['metode_pembayaran'];
 
+    // =========================================================
+    // 5. VALIDASI & PROSES UPLOAD GAMBAR
+    // =========================================================
+    // Cek apakah kedua file benar-benar diupload oleh user
+    if ($_FILES['bukti_pembayaran']['error'] !== UPLOAD_ERR_OK || $_FILES['poster']['error'] !== UPLOAD_ERR_OK) {
+        die("❌ Gagal mengunggah file. Pastikan Anda memilih gambar untuk poster dan bukti transfer.");
+    }
+
     // Siapkan folder upload gambar
     $folder_upload = "uploads/";
     if (!is_dir($folder_upload)) {
@@ -36,8 +41,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
     // Penamaan file gambar secara unik biar tidak saling menimpa
-    $nama_bukti_baru  = "bukti_" . time() . "_" . rand(100, 999) . "." . pathinfo($_FILES['bukti_pembayaran']['name'], PATHINFO_EXTENSION);
-    $nama_poster_baru = "poster_" . time() . "_" . rand(100, 999) . "." . pathinfo($_FILES['poster']['name'], PATHINFO_EXTENSION);
+    $ext_bukti  = pathinfo($_FILES['bukti_pembayaran']['name'], PATHINFO_EXTENSION);
+    $ext_poster = pathinfo($_FILES['poster']['name'], PATHINFO_EXTENSION);
+    
+    $nama_bukti_baru  = "bukti_" . time() . "_" . rand(100, 999) . "." . $ext_bukti;
+    $nama_poster_baru = "poster_" . time() . "_" . rand(100, 999) . "." . $ext_poster;
 
     // Proses pindah file dari browser ke folder server
     $upload_bukti_sukses  = move_uploaded_file($_FILES['bukti_pembayaran']['tmp_name'], $folder_upload . $nama_bukti_baru);
@@ -60,6 +68,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $biaya_pendaftaran = $_POST['biaya']; 
             $deskripsi         = $_POST['deskripsi'];
 
+            // CATATAN: Jika kolom 'biaya' di database Anda bertipe VARCHAR, ubah 'i' menjadi 's' pada bind_param di bawah
             $query_lomba = "INSERT INTO lomba (judul_lomba, penyelenggara, kategori, tingkat_lomba, deadline, tipe_biaya, biaya, deskripsi, poster, status_publish) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending')";
             $stmt_lomba = $conn->prepare($query_lomba);
             $stmt_lomba->bind_param("ssssssiss", $judul_lomba, $penyelenggara, $kategori, $tingkat_lomba, $deadline, $tipe_biaya, $biaya_pendaftaran, $deskripsi, $nama_poster_baru);
@@ -93,6 +102,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // =========================================================
         // [LANGKAH 2]: INPUT KE TABEL PEMBAYARAN
         // =========================================================
+        // CATATAN: Jika kolom 'jumlah' di database Anda bertipe DECIMAL/VARCHAR, ubah 'i' menjadi 'd' atau 's'
         $query_pembayaran = "INSERT INTO pembayaran (id_user, jumlah, metode_pembayaran, bukti_pembayaran, status_pembayaran) VALUES (?, ?, ?, ?, 'pending')";
         $stmt_pembayaran = $conn->prepare($query_pembayaran);
         $stmt_pembayaran->bind_param("iiss", $id_user_aktif, $jumlah_bayar, $metode_pembayaran, $nama_bukti_baru);
@@ -115,7 +125,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 die("❌ GAGAL PADA TABEL IKLAN_LOMBA: " . $stmt_iklan->error);
             }
             $stmt_iklan->close();
-            mysqli_close($conn);
             
             header("Location: halamanLomba.php?status=sukses");
             exit();
@@ -129,15 +138,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 die("❌ GAGAL PADA TABEL IKLAN_BEASISWA: " . $stmt_iklan->error);
             }
             $stmt_iklan->close();
-            mysqli_close($conn);
             
             header("Location: halamanBeasiswa.php?status=sukses");
             exit();
         }
 
     } else {
-        die("❌ Gagal mengunggah file gambar ke dalam folder server.");
+        die("❌ Gagal memindahkan file gambar ke dalam folder server. Cek izin akses folder 'uploads/'.");
     }
 }
+
+// Tutup koneksi (Opsional, PHP akan menutupnya otomatis saat script selesai)
 mysqli_close($conn);
 ?>
