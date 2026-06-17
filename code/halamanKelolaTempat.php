@@ -109,6 +109,11 @@ $list_tempat = mysqli_query($conn, "SELECT * FROM tempat_edukatif ORDER BY id_te
     .menu-label { font-size: 12px; color: var(--muted); font-weight: 700; margin-bottom: 12px; text-transform: uppercase; }
     .menu-item { display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: 14px; color: #334155; text-decoration: none; font-size: 14px; font-weight: 600; margin-bottom: 8px; transition: .25s ease; }
     .menu-item:hover, .menu-item.active { background: linear-gradient(90deg, var(--blue), var(--teal)); color: white; transform: translateX(4px); }
+    .menu-toggle { display: flex; align-items: center; justify-content: space-between; }
+    .menu-toggle .chevron { font-size: 11px; transition: transform .2s ease; }
+    .menu-toggle[aria-expanded="true"] .chevron { transform: rotate(180deg); }
+    .submenu { display: flex; flex-direction: column; padding-left: 16px; margin-bottom: 4px; }
+    .submenu-item { font-size: 12.5px; padding: 9px 14px; }
     .logout { position: absolute; bottom: 24px; left: 20px; right: 20px; background: #fee2e2; color: #b91c1c; text-align: center; }
 
     /* MAIN */
@@ -175,7 +180,17 @@ $list_tempat = mysqli_query($conn, "SELECT * FROM tempat_edukatif ORDER BY id_te
     <a class="menu-item" href="adminDashboard.php">📊 Dashboard</a>
     <a class="menu-item" href="halamanKelolaLomba.php">🏆 Kelola Lomba</a>
     <a class="menu-item" href="halamanKelolaBeasiswa.php">🎓 Kelola Beasiswa</a>
-    <a class="menu-item active" href="halamanKelolaTempat.php">📍 Kelola Tempat</a>
+    <a href="#" class="menu-item menu-toggle active" data-bs-toggle="collapse" data-bs-target="#submenuTempat" role="button" aria-expanded="true">
+      <span>📍 Kelola Tempat / Peta</span>
+      <span class="chevron">▾</span>
+    </a>
+    <div class="collapse show submenu" id="submenuTempat">
+      <a href="halamanKelolaTempat.php" class="menu-item submenu-item active">📋 Daftar Tempat</a>
+      <a href="HalamanVerifikasiTempat.php" class="menu-item submenu-item">✅ Verifikasi Pengajuan</a>
+      </div>
+      <a href="halamanKelolaFiturBeranda.php" class="menu-item">🏠 Kelola Fitur Beranda</a>
+      <a href="halamanKelolaBlog.php" class="menu-item">📝 Kelola Blog</a>
+      
     <a class="menu-item" href="halamanVerifikasi.php">✅ Verifikasi Iklan</a>
     <a href="logout.php" class="menu-item logout">🚪 Logout</a>
   </aside>

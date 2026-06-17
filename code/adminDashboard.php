@@ -116,6 +116,11 @@ $list_verif = mysqli_query($conn, $query_verif);
     .menu-label { font-size: 12px; color: var(--muted); font-weight: 700; margin-bottom: 12px; text-transform: uppercase; }
     .menu-item { display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: 14px; color: #334155; text-decoration: none; font-size: 14px; font-weight: 600; margin-bottom: 8px; transition: 0.25s ease; cursor: pointer; }
     .menu-item:hover, .menu-item.active { background: linear-gradient(90deg, var(--blue), var(--teal)); color: white; transform: translateX(4px); }
+    .menu-toggle { display: flex; align-items: center; justify-content: space-between; }
+    .menu-toggle .chevron { font-size: 11px; transition: transform .2s ease; }
+    .menu-toggle[aria-expanded="true"] .chevron { transform: rotate(180deg); }
+    .submenu { display: flex; flex-direction: column; padding-left: 16px; margin-bottom: 4px; }
+    .submenu-item { font-size: 12.5px; padding: 9px 14px; }
     .logout { position: absolute; bottom: 24px; left: 20px; right: 20px; background: #fee2e2; color: #b91c1c; text-align: center; }
     .main-content { margin-left: 270px; width: calc(100% - 270px); padding: 34px; }
     .topbar { background: white; border-radius: 22px; padding: 22px 26px; box-shadow: var(--shadow); display: flex; justify-content: space-between; align-items: center; margin-bottom: 28px; gap: 20px; flex-wrap: wrap; }
@@ -164,7 +169,17 @@ $list_verif = mysqli_query($conn, $query_verif);
       <a class="menu-item active" onclick="showSection('dashboard', this)">📊 Dashboard</a>
       <a class="menu-item" href="halamankelolaLomba.php">🏆 Kelola Lomba</a>
       <a class="menu-item" href="halamankelolaBeasiswa.php">🎓 Kelola Beasiswa</a>
-      <a class="menu-item" href="halamanKelolaTempat.php">📍 Kelola Tempat</a>
+      <a href="#" class="menu-item menu-toggle" data-bs-toggle="collapse" data-bs-target="#submenuTempat" role="button" aria-expanded="false">
+        <span>📍 Kelola Tempat / Peta</span>
+        <span class="chevron">▾</span>
+      </a>
+      <div class="collapse submenu" id="submenuTempat">
+        <a href="halamanKelolaTempat.php" class="menu-item submenu-item">📋 Daftar Tempat</a>
+        <a href="HalamanVerifikasiTempat.php" class="menu-item submenu-item">✅ Verifikasi Pengajuan</a>
+      </div>
+      <a href="halamanKelolaFiturBeranda.php" class="menu-item">🏠 Kelola Fitur Beranda</a>
+      <a href="halamanKelolaBlog.php" class="menu-item">📝 Kelola Blog</a>
+      
       
       <a href="halamanVerifikasi.php" class="menu-item" id="menu-verif-sidebar">
         ✅ Verifikasi Iklan 

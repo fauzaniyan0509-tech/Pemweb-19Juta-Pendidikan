@@ -49,6 +49,20 @@
       font-weight: 500;
     }
 
+    .dropdown-menu {
+      border: none; border-radius: 14px; padding: 8px;
+      box-shadow: 0 12px 30px rgba(20,33,61,.12);
+      margin-top: 10px; min-width: 190px;
+    }
+    .dropdown-item {
+      border-radius: 10px; padding: 10px 14px; font-size: 14px;
+      font-weight: 600; color: #1f2937; transition: background .15s, color .15s;
+    }
+    .dropdown-item:hover, .dropdown-item:focus {
+      background: linear-gradient(90deg, var(--blue), var(--teal));
+      color: white;
+    }
+
     .btn-gradient {
       background: linear-gradient(90deg, var(--blue), var(--teal));
       color: white;
@@ -283,7 +297,7 @@
 
   <nav class="navbar navbar-expand-lg py-3">
     <div class="container">
-      <a class="logo-text" href="#">19JutaPendidikan</a>
+      <a class="logo-text" href="beranda.php">19JutaPendidikan</a>
 
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
         <span class="navbar-toggler-icon"></span>
@@ -291,11 +305,19 @@
 
       <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
         <ul class="navbar-nav align-items-center gap-lg-4">
-          <li class="nav-item"><a class="nav-link" href="#">Beranda</a></li>
-          <li class="nav-item"><a class="nav-link" href="#">Lomba</a></li>
-          <li class="nav-item"><a class="nav-link" href="#">Beasiswa</a></li>
-          <li class="nav-item"><a class="nav-link" href="#">Peta Edukasi</a></li>
-          <li class="nav-item"><a class="btn-gradient" href="#">Publikasi Lomba</a></li>
+          <li class="nav-item"><a class="nav-link" href="beranda.php">Beranda</a></li>
+          <li class="nav-item"><a class="nav-link" href="halamanLomba.php">Lomba</a></li>
+          <li class="nav-item"><a class="nav-link" href="halamanBeasiswa.php">Beasiswa</a></li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="dropdownPetaEdukasi" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              Peta Edukasi
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownPetaEdukasi">
+              <li><a class="dropdown-item" href="halamanTempatEdukatif.php">🔍 Cari Tempat</a></li>
+              <li><a class="dropdown-item" href="PengajuanTempat.php">📍 Posting Tempat</a></li>
+            </ul>
+          </li>
+          <li class="nav-item"><a class="btn-gradient" href="halamanTransaksiLomba.php">Publikasi Lomba</a></li>
         </ul>
       </div>
     </div>

@@ -21,14 +21,16 @@
             </button>
             
             <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
-                <ul class="navbar-nav align-items-center gap-lg-4">
-                    <li class="nav-item"><a class="nav-link active" href="#">Home</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">About us</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Services</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Blog</a></li>
-                    <li class="nav-item ms-lg-3 mt-3 mt-lg-0 d-flex flex-column flex-lg-row gap-2">
-                        <a href="#" class="btn btn-primary btn-nav px-4 py-2">Contact us</a>
-                        <a href="halamanLoginAdmin.php" class="btn btn-outline-dark btn-nav px-4 py-2">Admin Login</a>
+                <ul class="navbar-nav align-items-center gap-lg-3">
+                    <li class="nav-item mt-2 mt-lg-0">
+                        <a href="contactUs.php" class="btn px-4 py-2" style="background:linear-gradient(90deg,#148fcd,#35c7b6); color:white; border:none; border-radius:999px; font-weight:600; font-size:14px; text-decoration:none;">
+                            Hubungi Kami
+                        </a>
+                    </li>
+                    <li class="nav-item mt-2 mt-lg-0">
+                        <a href="halamanLoginAdmin.php" class="btn px-4 py-2" style="background:#0f2942; color:white; border:none; border-radius:999px; font-weight:600; font-size:14px; text-decoration:none;">
+                            Admin Login
+                        </a>
                     </li>
                 </ul>
             </div>
@@ -46,14 +48,12 @@
                     <p class="hero-text text-muted mb-5">
                         Membuka akses belajar berkualitas bagi setiap anak bangsa melalui teknologi yang inklusif dan merata
                     </p>
-                    <div class="d-flex gap-3 justify-content-center justify-content-lg-start">
+                    <div class="d-flex gap-3 justify-content-center justify-content-lg-start flex-wrap">
                         <?php if (isset($_SESSION['status_login']) && $_SESSION['status_login'] === "sudah_login"): ?>
-                            <!-- Jika user SUDAH login, tampilkan tombol ke Beranda -->
-                            <a href="beranda.php" class="btn btn-primary custom-btn-primary">Ke Beranda</a>
+                            <a href="beranda.php" class="btn px-5 py-3" style="background:linear-gradient(90deg,#148fcd,#35c7b6); color:white; border:none; border-radius:999px; font-weight:700; font-size:15px;">Ke Beranda →</a>
                         <?php else: ?>
-                            <!-- Jika user BELUM login, tampilkan tombol Daftar dan Login -->
-                            <a href="halamanRegistrasi.php" class="btn btn-primary custom-btn-primary">Daftar</a>
-                            <a href="halamanLogin.php" class="btn btn-outline-primary custom-btn-outline">Login</a>
+                            <a href="halamanRegistrasi.php" class="btn px-5 py-3" style="background:linear-gradient(90deg,#148fcd,#35c7b6); color:white; border:none; border-radius:999px; font-weight:700; font-size:15px;">Daftar Sekarang</a>
+                            <a href="halamanLogin.php" class="btn px-5 py-3" style="background:white; color:#148fcd; border:2px solid #148fcd; border-radius:999px; font-weight:700; font-size:15px;">Login</a>
                         <?php endif; ?>
                     </div>
                 </div>

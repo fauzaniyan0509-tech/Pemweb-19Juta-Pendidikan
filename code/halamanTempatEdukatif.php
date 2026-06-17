@@ -1,10 +1,11 @@
 <?php
-include 'penghubung.php';
 // KONEKSI DATABASE
 $host = "localhost"; $user = "root"; $pass = ""; $db = "19juta_pendidikan";
 $conn = mysqli_connect($host, $user, $pass, $db);
 if (!$conn) die("Koneksi gagal: " . mysqli_connect_error());
 mysqli_set_charset($conn, "utf8mb4");
+
+require_once 'helperSosmed.php';
 
 // Ambil semua tempat
 $list_tempat = mysqli_query($conn, "SELECT * FROM tempat_edukatif ORDER BY id_tempat DESC");
@@ -61,6 +62,27 @@ function ikonKategori($kat) {
     .kartu-tempat { transition: transform .25s ease; }
     .kosong-state { text-align: center; padding: 60px 20px; color: #6b7280; }
     .kosong-state .ikon { font-size: 56px; margin-bottom: 16px; }
+
+    /* FILTER BARIS ATAS */
+    .select-filter-top {
+      border-radius: 12px; padding: 10px 16px; font-size: 14px; font-weight: 600;
+      border: 1px solid #e2e8f0; background: white; color: #334155;
+      font-family: 'Poppins', sans-serif; cursor: pointer; min-width: 180px;
+    }
+    .select-filter-top:focus { outline: none; border-color: #2f6df6; box-shadow: 0 0 0 3px rgba(47,109,246,.1); }
+    .tombol-reset-top {
+      border-radius: 12px; padding: 10px 18px; font-size: 14px; font-weight: 700;
+      border: 1px solid #e2e8f0; background: white; color: #64748b; cursor: pointer;
+    }
+    .tombol-reset-top:hover { background: #f1f5f9; }
+
+    .tag-lagi {
+      background: #ede9fe; color: #6d28d9; border-radius: 999px;
+      padding: 3px 10px; font-size: 11px; font-weight: 700;
+      cursor: pointer; border: none; transition: background .2s;
+    }
+    .tag-lagi:hover { background: #ddd6fe; }
+
   </style>
 </head>
 <body>
@@ -75,10 +97,8 @@ function ikonKategori($kat) {
       <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
         <ul class="navbar-nav align-items-center gap-lg-4">
           <li class="nav-item"><a class="nav-link" href="beranda.php">Beranda</a></li>
-          <li class="nav-item"><a class="nav-link" href="halamanLomba.php">Lomba</a></li>
-          <li class="nav-item"><a class="nav-link" href="halamanBeasiswa.php">Beasiswa</a></li>
-          <li class="nav-item"><a class="nav-link aktif" href="#">Peta Edukasi</a></li>
-          <li class="nav-item"><a class="tombol-gradient" href="halamanLomba.php">Publikasi Lomba</a></li>
+          <li class="nav-item"><a class="nav-link aktif" href="halamanTempatEdukatif.php">Tempat Edukatif</a></li>
+          <li class="nav-item"><a class="tombol-gradient" href="PengajuanTempat.php">Pengajuan Tempat</a></li>
         </ul>
       </div>
     </div>
@@ -95,6 +115,25 @@ function ikonKategori($kat) {
         <input type="text" id="pencarianHero" placeholder="Cari nama tempat, kategori, atau fasilitas..." oninput="filterTempat()">
         <button onclick="filterTempat()">Cari Tempat</button>
       </div>
+      <!-- Filter baris bawah search -->
+      <div class="filter-baris mt-3 d-flex justify-content-center gap-3 flex-wrap">
+        <select class="select-filter-top" id="filterKategori" onchange="filterTempat()">
+          <option value="semua">Semua Kategori</option>
+          <option value="perpustakaan">📚 Perpustakaan</option>
+          <option value="kafe-belajar">☕ Kafe Belajar</option>
+          <option value="teknologi">💡 Teknologi & Inovasi</option>
+          <option value="museum">🏛️ Museum & Sejarah</option>
+          <option value="ruang-kreatif">🎨 Ruang Kreatif</option>
+          <option value="lainnya">📌 Lainnya</option>
+        </select>
+        <select class="select-filter-top" id="filterRating" onchange="filterTempat()">
+          <option value="0">Semua Rating</option>
+          <option value="3">⭐ 3+</option>
+          <option value="4">⭐ 4+</option>
+          <option value="4.5">⭐ 4.5+</option>
+        </select>
+        <button class="tombol-reset-top" onclick="resetFilter()">Reset</button>
+      </div>
     </div>
   </section>
 
@@ -102,48 +141,8 @@ function ikonKategori($kat) {
   <main class="container pb-5">
     <div class="row g-4">
 
-      <!-- PANEL FILTER -->
-      <div class="col-lg-3">
-        <div class="kartu panel-filter">
-          <h3 class="judul-filter">Filter Tempat</h3>
-
-          <div class="mb-4">
-            <label>Cari Nama Tempat</label>
-            <input type="text" class="input-filter" id="pencarianSamping" placeholder="Contoh: Perpustakaan" oninput="filterTempat()">
-          </div>
-
-          <div class="mb-4">
-            <label>Kategori Tempat</label>
-            <select class="select-filter" id="filterKategori" onchange="filterTempat()">
-              <option value="semua">Semua Kategori</option>
-              <option value="perpustakaan">Perpustakaan</option>
-              <option value="kafe-belajar">Kafe Belajar</option>
-              <option value="teknologi">Teknologi & Inovasi</option>
-              <option value="museum">Museum & Sejarah</option>
-              <option value="ruang-kreatif">Ruang Kreatif</option>
-              <option value="tempat-makan">Tempat Makan</option>
-              <option value="ruang-terbuka">Ruang Terbuka</option>
-              <option value="lainnya">Lainnya</option>
-            </select>
-          </div>
-
-          <div class="mb-3">
-            <label>Rating Minimum</label>
-            <select class="select-filter" id="filterRating" onchange="filterTempat()">
-              <option value="0">Semua Rating</option>
-              <option value="3">⭐ 3+</option>
-              <option value="4">⭐ 4+</option>
-              <option value="4.5">⭐ 4.5+</option>
-            </select>
-          </div>
-
-          <button class="tombol-filter" onclick="filterTempat()">Terapkan Filter</button>
-          <button class="tombol-reset" onclick="resetFilter()">Reset Filter</button>
-        </div>
-      </div>
-
-      <!-- GRID TEMPAT -->
-      <div class="col-lg-9">
+      <!-- GRID TEMPAT (full width) -->
+      <div class="col-12">
         <div class="judul-section">
           <div>
             <h2>Daftar Tempat Edukatif</h2>
@@ -208,29 +207,35 @@ function ikonKategori($kat) {
                 <?php endif; ?>
 
                 <!-- Sosial Media -->
-                <?php if ($t['sosial_media']): ?>
-                <div class="info-baris">
-                  <span>📱</span>
-                  <?php
-                    $sosmed = $t['sosial_media'];
-                    $isLink = str_starts_with($sosmed, 'http');
-                  ?>
-                  <?php if ($isLink): ?>
-                    <a href="<?= htmlspecialchars($sosmed) ?>" target="_blank" class="sosmed-link"><?= htmlspecialchars($sosmed) ?></a>
-                  <?php else: ?>
-                    <span class="sosmed-link"><?= htmlspecialchars($sosmed) ?></span>
-                  <?php endif; ?>
+                <?php $listSosmed = daftarSosmed($t); ?>
+                <?php if (!empty($listSosmed)): ?>
+                <div class="info-baris" style="flex-wrap: wrap; gap: 10px;">
+                  <?php foreach ($listSosmed as $sm): ?>
+                    <?php if ($sm['url']): ?>
+                      <a href="<?= htmlspecialchars($sm['url']) ?>" target="_blank" class="sosmed-link"><?= $sm['icon'] ?> <?= htmlspecialchars($sm['label']) ?></a>
+                    <?php else: ?>
+                      <span class="sosmed-link"><?= $sm['icon'] ?> <?= htmlspecialchars($sm['label']) ?></span>
+                    <?php endif; ?>
+                  <?php endforeach; ?>
                 </div>
                 <?php endif; ?>
 
                 <!-- Prasarana Tags -->
-                <?php if (!empty($prasaranaList)): ?>
+                <?php if (!empty($prasaranaList)):
+                  $tampil  = array_slice($prasaranaList, 0, 5);
+                  $sisanya = array_slice($prasaranaList, 5);
+                ?>
                 <div class="prasarana-tags">
-                  <?php foreach (array_slice($prasaranaList, 0, 5) as $p): ?>
+                  <?php foreach ($tampil as $p): ?>
                     <span class="tag-prasarana">✓ <?= htmlspecialchars(trim($p)) ?></span>
                   <?php endforeach; ?>
-                  <?php if (count($prasaranaList) > 5): ?>
-                    <span class="tag-prasarana">+<?= count($prasaranaList) - 5 ?> lagi</span>
+                  <?php if (count($sisanya) > 0): ?>
+                    <span class="tags-tersembunyi" style="display:none;">
+                      <?php foreach ($sisanya as $p): ?>
+                        <span class="tag-prasarana">✓ <?= htmlspecialchars(trim($p)) ?></span>
+                      <?php endforeach; ?>
+                    </span>
+                    <button class="tag-lagi" onclick="expandTags(this)">+<?= count($sisanya) ?> lagi</button>
                   <?php endif; ?>
                 </div>
                 <?php endif; ?>
@@ -260,33 +265,38 @@ function ikonKategori($kat) {
           <p>Coba ubah kata kunci atau filter yang kamu gunakan.</p>
         </div>
 
-      </div>
+      </div><!-- /col-12 -->
     </div>
   </main>
 
   <script>
-    function filterTempat() {
-      const cariHero    = document.getElementById('pencarianHero').value.toLowerCase().trim();
-      const cariSamping = document.getElementById('pencarianSamping').value.toLowerCase().trim();
-      const kategori    = document.getElementById('filterKategori').value;
-      const ratingMin   = parseFloat(document.getElementById('filterRating').value) || 0;
+    function expandTags(btn) {
+      const tersembunyi = btn.previousElementSibling;
+      if (tersembunyi && tersembunyi.classList.contains('tags-tersembunyi')) {
+        const parent = btn.parentElement;
+        while (tersembunyi.firstChild) {
+          parent.insertBefore(tersembunyi.firstChild, btn);
+        }
+        tersembunyi.remove();
+      }
+      btn.remove();
+    }
 
-      const items    = document.querySelectorAll('.item-tempat');
-      const kataCari = cariHero || cariSamping;
-      let jumlah     = 0;
+    function filterTempat() {
+      const kataCari  = document.getElementById('pencarianHero').value.toLowerCase().trim();
+      const kategori  = document.getElementById('filterKategori').value;
+      const ratingMin = parseFloat(document.getElementById('filterRating').value) || 0;
+
+      const items = document.querySelectorAll('.item-tempat');
+      let jumlah  = 0;
 
       items.forEach(item => {
-        const nama       = item.dataset.nama;
-        const itemKat    = item.dataset.kategori;
-        const itemRating = parseFloat(item.dataset.rating) || 0;
-
-        const cocokTeks    = kataCari === '' || nama.includes(kataCari);
-        const cocokKat     = kategori === 'semua' || itemKat === kategori;
-        const cocokRating  = itemRating >= ratingMin;
+        const cocokTeks   = kataCari === '' || item.dataset.nama.includes(kataCari);
+        const cocokKat    = kategori === 'semua' || item.dataset.kategori === kategori;
+        const cocokRating = (parseFloat(item.dataset.rating) || 0) >= ratingMin;
 
         if (cocokTeks && cocokKat && cocokRating) {
-          item.style.display = 'block';
-          jumlah++;
+          item.style.display = 'block'; jumlah++;
         } else {
           item.style.display = 'none';
         }
@@ -297,20 +307,11 @@ function ikonKategori($kat) {
     }
 
     function resetFilter() {
-      document.getElementById('pencarianHero').value    = '';
-      document.getElementById('pencarianSamping').value = '';
-      document.getElementById('filterKategori').value   = 'semua';
-      document.getElementById('filterRating').value     = '0';
+      document.getElementById('pencarianHero').value  = '';
+      document.getElementById('filterKategori').value = 'semua';
+      document.getElementById('filterRating').value   = '0';
       filterTempat();
     }
-
-    // Sinkronisasi dua input pencarian
-    document.getElementById('pencarianHero').addEventListener('input', () => {
-      document.getElementById('pencarianSamping').value = '';
-    });
-    document.getElementById('pencarianSamping').addEventListener('input', () => {
-      document.getElementById('pencarianHero').value = '';
-    });
   </script>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

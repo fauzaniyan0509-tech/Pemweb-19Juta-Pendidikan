@@ -127,6 +127,11 @@ $total_menunggu = $data_menunggu['total'] ?? 0;
     .menu-item:hover, .menu-item.active { background: linear-gradient(90deg, var(--blue), var(--teal)); color: white; transform: translateX(4px); }
     .logout { background: #fee2e2; color: #b91c1c; text-align: center; justify-content: center; margin-top: auto; margin-bottom: 10px; }
     .logout:hover { background: #fca5a5; color: #b91c1c; transform: none; }
+    .menu-toggle { display: flex; align-items: center; justify-content: space-between; }
+    .menu-toggle .chevron { font-size: 11px; transition: transform .2s ease; }
+    .menu-toggle[aria-expanded="true"] .chevron { transform: rotate(180deg); }
+    .submenu { display: flex; flex-direction: column; padding-left: 16px; margin-bottom: 4px; }
+    .submenu-item { font-size: 12.5px; padding: 9px 14px; }
     
     .main-content { margin-left: 270px; width: calc(100% - 270px); padding: 34px; }
     .topbar { background: white; border-radius: 22px; padding: 22px 26px; box-shadow: var(--shadow); display: flex; justify-content: space-between; align-items: center; margin-bottom: 28px; }
@@ -161,7 +166,17 @@ $total_menunggu = $data_menunggu['total'] ?? 0;
       <div class="menu-label">Manajemen Data</div>
       <a href="halamanKelolaLomba.php" class="menu-item active">🏆 Kelola Lomba</a>
       <a href="halamanKelolaBeasiswa.php" class="menu-item">🎓 Kelola Beasiswa</a>
-      <a href="halamanKelolaTempat.php" class="menu-item">📍 Kelola Tempat / Peta</a>
+      <a href="#" class="menu-item menu-toggle" data-bs-toggle="collapse" data-bs-target="#submenuTempat" role="button" aria-expanded="false">
+        <span>📍 Kelola Tempat / Peta</span>
+        <span class="chevron">▾</span>
+      </a>
+      <div class="collapse submenu" id="submenuTempat">
+        <a href="halamanKelolaTempat.php" class="menu-item submenu-item">📋 Daftar Tempat</a>
+        <a href="HalamanVerifikasiTempat.php" class="menu-item submenu-item">✅ Verifikasi Pengajuan</a>
+      </div>
+      <a href="halamanKelolaFiturBeranda.php" class="menu-item">🏠 Kelola Fitur Beranda</a>
+      <a href="halamanKelolaBlog.php" class="menu-item">📝 Kelola Blog</a>
+      
       <a href="halamanKelolaTransaksi.php" class="menu-item">💳 Kelola Transaksi</a>
       
       <div class="menu-label">Sistem Validasi</div>
