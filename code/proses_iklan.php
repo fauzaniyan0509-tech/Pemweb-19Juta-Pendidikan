@@ -29,9 +29,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // =========================================================
     // 5. VALIDASI & PROSES UPLOAD GAMBAR
     // =========================================================
-    // Cek apakah kedua file benar-benar diupload oleh user
-    if ($_FILES['bukti_pembayaran']['error'] !== UPLOAD_ERR_OK || $_FILES['poster']['error'] !== UPLOAD_ERR_OK) {
-        die("❌ Gagal mengunggah file. Pastikan Anda memilih gambar untuk poster dan bukti transfer.");
+    // Poster wajib untuk semua jenis iklan
+    if ($_FILES['poster']['error'] !== UPLOAD_ERR_OK) {
+        die("❌ Gagal mengunggah poster. Pastikan Anda memilih file gambar poster.");
+    }
+    // Bukti pembayaran hanya wajib untuk LOMBA (beasiswa = gratis)
+    if ($jenis_iklan === 'lomba' && $_FILES['bukti_pembayaran']['error'] !== UPLOAD_ERR_OK) {
+        die("❌ Gagal mengunggah bukti transfer. Pastikan Anda memilih gambar bukti pembayaran.");
     }
 
     // Siapkan folder upload gambar
@@ -40,18 +44,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         mkdir($folder_upload, 0777, true);
     }
 
-    // Penamaan file gambar secara unik biar tidak saling menimpa
-    $ext_bukti  = pathinfo($_FILES['bukti_pembayaran']['name'], PATHINFO_EXTENSION);
-    $ext_poster = pathinfo($_FILES['poster']['name'], PATHINFO_EXTENSION);
-    
-    $nama_bukti_baru  = "bukti_" . time() . "_" . rand(100, 999) . "." . $ext_bukti;
+    // Upload poster (wajib semua jenis iklan)
+    $ext_poster       = pathinfo($_FILES['poster']['name'], PATHINFO_EXTENSION);
     $nama_poster_baru = "poster_" . time() . "_" . rand(100, 999) . "." . $ext_poster;
-
-    // Proses pindah file dari browser ke folder server
-    $upload_bukti_sukses  = move_uploaded_file($_FILES['bukti_pembayaran']['tmp_name'], $folder_upload . $nama_bukti_baru);
     $upload_poster_sukses = move_uploaded_file($_FILES['poster']['tmp_name'], $folder_upload . $nama_poster_baru);
 
-    if ($upload_bukti_sukses && $upload_poster_sukses) {
+    // Upload bukti bayar hanya untuk LOMBA
+    $nama_bukti_baru = 'gratis';
+    if ($jenis_iklan === 'lomba' && $_FILES['bukti_pembayaran']['error'] === UPLOAD_ERR_OK) {
+        $ext_bukti       = pathinfo($_FILES['bukti_pembayaran']['name'], PATHINFO_EXTENSION);
+        $nama_bukti_baru = "bukti_" . time() . "_" . rand(100, 999) . "." . $ext_bukti;
+        move_uploaded_file($_FILES['bukti_pembayaran']['tmp_name'], $folder_upload . $nama_bukti_baru);
+    }
+
+    if ($upload_poster_sukses) {
         
         $id_item_baru = 0;
 
@@ -67,11 +73,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $tipe_biaya        = $_POST['tipe_biaya'];
             $biaya_pendaftaran = $_POST['biaya']; 
             $deskripsi         = $_POST['deskripsi'];
+            $kontak_pengaju    = $_POST['kontak_pengaju'] ?? '';
 
-            // CATATAN: Jika kolom 'biaya' di database Anda bertipe VARCHAR, ubah 'i' menjadi 's' pada bind_param di bawah
-            $query_lomba = "INSERT INTO lomba (judul_lomba, penyelenggara, kategori, tingkat_lomba, deadline, tipe_biaya, biaya, deskripsi, poster, status_publish) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending')";
+            // CATATAN: Jika kolom 'biaya' di database Anda bertipe VARCHAR, ubah 'i' menjadi 's' pada bind_param
+            $query_lomba = "INSERT INTO lomba (judul_lomba, penyelenggara, kategori, tingkat_lomba, deadline, tipe_biaya, biaya, deskripsi, poster, status_publish, kontak_pengaju) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending', ?)";
             $stmt_lomba = $conn->prepare($query_lomba);
-            $stmt_lomba->bind_param("ssssssiss", $judul_lomba, $penyelenggara, $kategori, $tingkat_lomba, $deadline, $tipe_biaya, $biaya_pendaftaran, $deskripsi, $nama_poster_baru);
+            $stmt_lomba->bind_param("ssssssisss", $judul_lomba, $penyelenggara, $kategori, $tingkat_lomba, $deadline, $tipe_biaya, $biaya_pendaftaran, $deskripsi, $nama_poster_baru, $kontak_pengaju);
             
             if (!$stmt_lomba->execute()) {
                 die("❌ GAGAL PADA TABEL LOMBA: " . $stmt_lomba->error);
@@ -87,10 +94,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $deadline         = $_POST['deadline'];
             $tipe_pendanaan   = $_POST['tipe_pendanaan'];
             $deskripsi        = $_POST['deskripsi'];
+            $kontak_pengaju   = $_POST['kontak_pengaju'] ?? '';
 
-            $query_beasiswa = "INSERT INTO beasiswa (nama_beasiswa, penyelenggara, jenjang, tingkat_beasiswa, deskripsi, poster, deadline, tipe_pendanaan) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+            $query_beasiswa = "INSERT INTO beasiswa (nama_beasiswa, penyelenggara, jenjang, tingkat_beasiswa, deskripsi, poster, deadline, tipe_pendanaan, status_publish, kontak_pengaju) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'pending', ?)";
             $stmt_beasiswa = $conn->prepare($query_beasiswa);
-            $stmt_beasiswa->bind_param("ssssssss", $nama_beasiswa, $penyelenggara, $jenjang, $tingkat_beasiswa, $deskripsi, $nama_poster_baru, $deadline, $tipe_pendanaan);
+            $stmt_beasiswa->bind_param("sssssssss", $nama_beasiswa, $penyelenggara, $jenjang, $tingkat_beasiswa, $deskripsi, $nama_poster_baru, $deadline, $tipe_pendanaan, $kontak_pengaju);
             
             if (!$stmt_beasiswa->execute()) {
                 die("❌ GAGAL PADA TABEL BEASISWA: " . $stmt_beasiswa->error);
@@ -100,18 +108,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
 
         // =========================================================
-        // [LANGKAH 2]: INPUT KE TABEL PEMBAYARAN
+        // [LANGKAH 2]: INPUT KE TABEL PEMBAYARAN (hanya untuk LOMBA)
+        // Beasiswa = GRATIS, tidak perlu record pembayaran
         // =========================================================
-        // CATATAN: Jika kolom 'jumlah' di database Anda bertipe DECIMAL/VARCHAR, ubah 'i' menjadi 'd' atau 's'
-        $query_pembayaran = "INSERT INTO pembayaran (id_user, jumlah, metode_pembayaran, bukti_pembayaran, status_pembayaran) VALUES (?, ?, ?, ?, 'pending')";
-        $stmt_pembayaran = $conn->prepare($query_pembayaran);
-        $stmt_pembayaran->bind_param("iiss", $id_user_aktif, $jumlah_bayar, $metode_pembayaran, $nama_bukti_baru);
-        
-        if (!$stmt_pembayaran->execute()) {
-            die("❌ GAGAL PADA TABEL PEMBAYARAN: " . $stmt_pembayaran->error);
+        $id_pembayaran_baru = NULL;
+        if ($jenis_iklan === 'lomba') {
+            $query_pembayaran = "INSERT INTO pembayaran (id_user, jumlah, metode_pembayaran, bukti_pembayaran, status_pembayaran) VALUES (?, ?, ?, ?, 'pending')";
+            $stmt_pembayaran = $conn->prepare($query_pembayaran);
+            $stmt_pembayaran->bind_param("iiss", $id_user_aktif, $jumlah_bayar, $metode_pembayaran, $nama_bukti_baru);
+            if (!$stmt_pembayaran->execute()) {
+                die("❌ GAGAL PADA TABEL PEMBAYARAN: " . $stmt_pembayaran->error);
+            }
+            $id_pembayaran_baru = $conn->insert_id;
+            $stmt_pembayaran->close();
         }
-        $id_pembayaran_baru = $conn->insert_id; 
-        $stmt_pembayaran->close();
 
         // =========================================================
         // [LANGKAH 3]: INPUT KE TABEL RELASI IKLAN

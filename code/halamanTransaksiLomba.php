@@ -216,6 +216,17 @@ include 'penghubung.php';
               <small class="text-muted" style="font-size: 11px;">Format yang didukung: JPG, JPEG, PNG.</small>
             </div>
 
+            <div class="mb-3" style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:14px;padding:18px 20px;">
+              <label for="kontak_pengaju" style="font-size:13px;font-weight:700;color:#1e3a5f;margin-bottom:6px;display:block;">
+                Sumber / Kontak Pengaju <span class="required">*</span>
+              </label>
+              <input type="text" name="kontak_pengaju" id="kontak_pengaju" class="form-control" required
+                placeholder="Contoh: https://instagram.com/namaakun  atau  08123456789  atau  https://web-resmi.com">
+              <small class="text-muted" style="font-size:11px;display:block;margin-top:6px;">
+                &#9888;&#65039; Wajib diisi untuk verifikasi admin. Masukkan link Instagram, nomor WhatsApp, website resmi, atau media sosial lain yang aktif.
+              </small>
+            </div>
+
             <h6 class="section-title">Detail Iklan</h6>
             <div class="mb-3">
               <label for="judul_iklan">Judul Iklan Promosi <span class="required">*</span></label>

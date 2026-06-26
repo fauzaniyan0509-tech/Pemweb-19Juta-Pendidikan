@@ -48,6 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['update_lomba'])) {
     $tipe_biaya    = mysqli_real_escape_string($conn, $_POST['tipe_biaya']);
     $biaya         = mysqli_real_escape_string($conn, $_POST['biaya']);
     $deskripsi     = mysqli_real_escape_string($conn, $_POST['deskripsi']);
+    $kontak_pengaju = mysqli_real_escape_string($conn, $_POST['kontak_pengaju'] ?? '');
 
     // Logika Pemrosesan Gambar (POSTER BARU)
     $query_old = mysqli_query($conn, "SELECT poster FROM lomba WHERE id_lomba = '$id_lomba'");
@@ -82,6 +83,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['update_lomba'])) {
                         tipe_biaya = '$tipe_biaya',
                         biaya = '$biaya',
                         deskripsi = '$deskripsi',
+                        kontak_pengaju = '$kontak_pengaju',
                         poster = '$poster_fix' 
                     WHERE id_lomba = '$id_lomba'";
     
@@ -215,6 +217,7 @@ $total_menunggu = $data_menunggu['total'] ?? 0;
                 <th>Kategori / Tingkat</th>
                 <th>Deadline</th>
                 <th>Biaya</th>
+                <th>Kontak Pengaju</th>
                 <th class="text-center">Aksi</th>
               </tr>
             </thead>
@@ -242,6 +245,17 @@ $total_menunggu = $data_menunggu['total'] ?? 0;
                   <div class="fw-semibold"><?= htmlspecialchars($l['tipe_biaya'] ?? '-') ?></div>
                   <small class="text-muted">Rp <?= number_format($l['biaya'] ?? 0, 0, ',', '.') ?></small>
                 </td>
+                <td>
+                  <?php if (!empty($l['kontak_pengaju'])): ?>
+                    <a href="<?= htmlspecialchars((str_starts_with(trim($l['kontak_pengaju']), 'http') ? $l['kontak_pengaju'] : 'https://' . $l['kontak_pengaju'])) ?>"
+                       target="_blank" rel="noopener noreferrer"
+                       style="display:inline-flex;align-items:center;gap:6px;background:#dcfce7;color:#15803d;border-radius:8px;padding:5px 12px;font-size:12px;font-weight:700;text-decoration:none;">
+                      <i class="bi bi-box-arrow-up-right"></i> Lihat Kontak
+                    </a>
+                  <?php else: ?>
+                    <span style="background:#f1f5f9;color:#94a3b8;border-radius:8px;padding:5px 12px;font-size:12px;font-weight:700;">Belum diisi</span>
+                  <?php endif; ?>
+                </td>
                 <td class="text-center" style="white-space: nowrap;">
                   <button class="action-btn edit-btn" onclick="openEditModal(
                     '<?= $l['id_lomba'] ?>', 
@@ -253,12 +267,13 @@ $total_menunggu = $data_menunggu['total'] ?? 0;
                     '<?= addslashes($l['tipe_biaya'] ?? '') ?>',
                     '<?= $l['biaya'] ?? 0 ?>',
                     '<?= addslashes(str_replace(["\r", "\n"], ' ', $l['deskripsi'] ?? '')) ?>',
-                    '<?= htmlspecialchars($file_poster) ?>'
+                    '<?= htmlspecialchars($file_poster) ?>',
+                    '<?= addslashes($l['kontak_pengaju'] ?? '') ?>'
                   )">✏️ Edit</button>
                   <a href="?hapus_id=<?= $l['id_lomba'] ?>" class="action-btn delete-btn" onclick="return confirm('Hapus lomba ini?')">❌ Hapus</a>
                 </td>
               </tr>
-              <?php endwhile; if(mysqli_num_rows($list_lomba) == 0) echo "<tr><td colspan='6' class='text-center py-4'>Belum ada data lomba.</td></tr>"; ?>
+              <?php endwhile; if(mysqli_num_rows($list_lomba) == 0) echo "<tr><td colspan='7' class='text-center py-4'>Belum ada data lomba.</td></tr>"; ?>
             </tbody>
           </table>
         </div>
@@ -322,6 +337,13 @@ $total_menunggu = $data_menunggu['total'] ?? 0;
         </div>
 
         <div class="mb-3"><label>Deskripsi Lomba</label><textarea name="deskripsi" id="modalDeskripsi" class="form-control" rows="4" required></textarea></div>
+
+        <div class="mb-3">
+          <label>Sumber / Kontak Pengaju</label>
+          <input type="text" name="kontak_pengaju" id="modalKontak" class="form-control"
+            placeholder="Contoh: https://instagram.com/akun  atau  08123456789">
+          <small class="text-muted" style="font-size:11px;">Link Instagram, nomor WhatsApp, website resmi, atau media sosial lainnya.</small>
+        </div>
         
         <button type="submit" class="btn-gradient">Simpan Semua Perubahan Data</button>
       </form>
@@ -344,7 +366,7 @@ $total_menunggu = $data_menunggu['total'] ?? 0;
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script>
-    function openEditModal(id, judul, penyelenggara, kategori, tingkat, deadline, tipe_biaya, biaya, deskripsi, poster_path) {
+    function openEditModal(id, judul, penyelenggara, kategori, tingkat, deadline, tipe_biaya, biaya, deskripsi, poster_path, kontak) {
       document.getElementById('modalId').value = id;
       document.getElementById('modalJudul').value = judul;
       document.getElementById('modalPenyelenggara').value = penyelenggara;
@@ -354,6 +376,7 @@ $total_menunggu = $data_menunggu['total'] ?? 0;
       document.getElementById('modalTipeBiaya').value = tipe_biaya;
       document.getElementById('modalBiaya').value = biaya;
       document.getElementById('modalDeskripsi').value = deskripsi;
+      document.getElementById('modalKontak').value = kontak;
       
       document.getElementById('modalPreviewPoster').src = 'uploads/' + poster_path;
       document.getElementById('modalInputPoster').value = ''; 

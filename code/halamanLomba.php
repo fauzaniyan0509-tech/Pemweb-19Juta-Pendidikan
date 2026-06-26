@@ -149,7 +149,7 @@ include 'penghubung.php';
                     </div>
                     <div class="deadline-box">⏰ Deadline: <?= date('d F Y', strtotime($row['deadline'])) ?></div>
                     <div class="hadiah-box">🏆 <?= htmlspecialchars($row['deskripsi']) ?></div>
-                    <a href="#" class="detail-btn">Lihat Detail & Daftar</a>
+                    <a href="detailLomba.php?id=<?= $row['id_lomba'] ?>" class="detail-btn">Lihat Detail & Daftar</a>
                   </div>
                 </div>
               </div>
