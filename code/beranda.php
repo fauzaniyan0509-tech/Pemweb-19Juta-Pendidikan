@@ -24,6 +24,8 @@ $jmlUser     = mysqli_fetch_row(mysqli_query($conn, "SELECT COUNT(*) FROM user")
   <title>Beranda – 19JutaPendidikan</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="landingpage.css">
+  <!-- Font Awesome 6 untuk ikon -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     :root { --biru: #148fcd; --teal: #35c7b6; --gelap: #0f2942; }
     body { background: #f0f7fb; font-family: 'Poppins', sans-serif; }
@@ -34,7 +36,7 @@ $jmlUser     = mysqli_fetch_row(mysqli_query($conn, "SELECT COUNT(*) FROM user")
     .nav-link { font-weight: 500; color: #374151 !important; font-size: 14px; }
     .nav-link.active, .nav-link:hover { color: var(--biru) !important; }
 
-    /* ── HERO ── */
+    /* ── HERO ─ */
     .hero {
       background: linear-gradient(135deg, #0f2942 0%, #148fcd 60%, #35c7b6 100%);
       padding: 90px 0 120px; position: relative; overflow: hidden;
@@ -64,17 +66,21 @@ $jmlUser     = mysqli_fetch_row(mysqli_query($conn, "SELECT COUNT(*) FROM user")
     .orb2 { width: 180px; height: 180px; bottom: 80px; right: 20%; }
     .hero-emoji-grid {
       display: grid; grid-template-columns: repeat(3,1fr); gap: 14px;
-      max-width: 280px; margin: 0 auto;
+      max-width: 320px; margin: 0 auto;
     }
     .hero-emoji-card {
       background: rgba(255,255,255,.12); backdrop-filter: blur(8px);
       border: 1px solid rgba(255,255,255,.2); border-radius: 16px;
-      padding: 18px 10px; text-align: center;
-      transition: transform .2s;
+      padding: 22px 14px; text-align: center;
+      transition: transform .2s, background .2s;
+      text-decoration: none; cursor: pointer;
     }
-    .hero-emoji-card:hover { transform: translateY(-4px); }
-    .hero-emoji-card .emo { font-size: 1.8rem; display: block; margin-bottom: 6px; }
-    .hero-emoji-card .lbl { color: rgba(255,255,255,.85); font-size: 10.5px; font-weight: 600; }
+    .hero-emoji-card:hover { 
+      transform: translateY(-6px); 
+      background: rgba(255,255,255,.2);
+    }
+    .hero-emoji-card .emo { font-size: 2.2rem; display: block; margin-bottom: 8px; }
+    .hero-emoji-card .lbl { color: white; font-size: 11px; font-weight: 700; }
 
     /* ── STAT STRIP ── */
     .stat-strip {
@@ -130,38 +136,134 @@ $jmlUser     = mysqli_fetch_row(mysqli_query($conn, "SELECT COUNT(*) FROM user")
     .step-body h6 { font-weight: 700; color: var(--gelap); margin-bottom: 4px; font-size: 14.5px; }
     .step-body p  { font-size: 13px; color: #64748b; margin: 0; line-height: 1.7; }
 
-    /* ── CTA BANNER ── */
-    .cta-banner {
-      background: linear-gradient(135deg, var(--gelap) 0%, #1a4a7a 50%, #148fcd 100%);
-      border-radius: 24px; padding: 50px 40px; text-align: center; color: white;
-      position: relative; overflow: hidden;
-    }
-    .cta-banner::before {
-      content: '🎓'; position: absolute; font-size: 120px; opacity: .06;
-      top: -20px; left: -20px; transform: rotate(-15deg);
-    }
-    .cta-banner::after {
-      content: '🏆'; position: absolute; font-size: 120px; opacity: .06;
-      bottom: -20px; right: -20px; transform: rotate(15deg);
-    }
-    .cta-banner h2 { font-size: 1.7rem; font-weight: 800; margin-bottom: 12px; }
-    .cta-banner p  { opacity: .85; font-size: 14.5px; max-width: 500px; margin: 0 auto 28px; line-height: 1.8; }
-    .cta-btn {
-      display: inline-block; background: white; color: var(--biru);
-      font-weight: 700; font-size: 14px; padding: 12px 28px;
-      border-radius: 999px; text-decoration: none; transition: transform .2s, box-shadow .2s;
-      margin: 6px;
-    }
-    .cta-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,.2); }
-    .cta-btn.outline {
-      background: transparent; color: white;
-      border: 2px solid rgba(255,255,255,.5);
-    }
-    .cta-btn.outline:hover { background: rgba(255,255,255,.1); }
-
     /* ── FOOTER ── */
-    footer { background: var(--gelap); color: white; padding: 24px 0; text-align: center; }
-    footer p { margin: 0; font-size: 13px; opacity: .6; }
+    .custom-footer {
+      background: linear-gradient(135deg, #0f2942 0%, #1a4a7a 100%);
+      color: white;
+      padding: 70px 0 30px;
+      margin-top: 60px;
+    }
+    .footer-logo {
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: white;
+    }
+    .footer-desc {
+      font-size: 14px;
+      line-height: 1.8;
+    }
+    .footer-heading {
+      font-size: 15px;
+      font-weight: 700;
+      color: white;
+      margin-bottom: 20px;
+    }
+    .footer-links li, .footer-contact li {
+      margin-bottom: 10px;
+    }
+    .footer-links a {
+      color: rgba(255,255,255,0.75);
+      text-decoration: none;
+      font-size: 14px;
+      transition: color 0.2s;
+    }
+    .footer-links a:hover {
+      color: white;
+    }
+    .footer-contact li {
+      color: rgba(255,255,255,0.75);
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+    }
+    .footer-socials .social-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      text-decoration: none;
+      font-size: 18px;
+      transition: all 0.3s ease;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    .footer-socials .social-icon:hover {
+      transform: translateY(-3px);
+      color: white;
+    }
+    .footer-socials .social-icon:nth-child(1):hover {
+      background: #25D366;
+      border-color: #25D366;
+    }
+    .footer-socials .social-icon:nth-child(2):hover {
+      background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+      border-color: #dc2743;
+    }
+    .footer-socials .social-icon:nth-child(3):hover {
+      background: #148fcd;
+      border-color: #148fcd;
+    }
+    .footer-bottom {
+      border-top: 1px solid rgba(255,255,255,0.1);
+      padding-top: 25px;
+    }
+    .footer-bottom p {
+      font-size: 13px;
+      color: rgba(255,255,255,0.6);
+      margin: 0;
+    }
+    .footer-bottom-links a {
+      color: rgba(255,255,255,0.6);
+      text-decoration: none;
+      font-size: 13px;
+      transition: color 0.2s;
+    }
+    .footer-bottom-links a:hover {
+      color: white;
+    }
+
+    /* ── RESPONSIVE UNTUK MOBILE ── */
+    @media (max-width: 991px) {
+      .hero {
+        padding: 60px 0 80px;
+      }
+      .hero-emoji-grid {
+        max-width: 100%;
+        margin: 30px auto 0;
+      }
+      .hero h1 {
+        text-align: center;
+      }
+      .hero p {
+        text-align: center;
+        margin: 0 auto 20px;
+      }
+      .hero > div > .row > div:first-child {
+        text-align: center;
+      }
+      .hero > div > .row > div:first-child .cta-btn {
+        margin: 0 auto;
+        display: inline-block;
+      }
+    }
+
+    @media (max-width: 576px) {
+      .hero-emoji-grid {
+        gap: 10px;
+      }
+      .hero-emoji-card {
+        padding: 16px 10px;
+      }
+      .hero-emoji-card .emo {
+        font-size: 1.8rem;
+      }
+      .hero-emoji-card .lbl {
+        font-size: 10px;
+      }
+    }
   </style>
 </head>
 <body>
@@ -202,19 +304,24 @@ $jmlUser     = mysqli_fetch_row(mysqli_query($conn, "SELECT COUNT(*) FROM user")
         <span class="hero-badge">✨ Platform Pendidikan Digital</span>
         <h1>Halo, <span><?= $nama_user ?>!</span><br>Temukan peluang<br>terbaik untuk belajar.</h1>
         <p>Cari tempat belajar nyaman, info beasiswa, hingga lomba bergengsi — semuanya ada di satu platform.</p>
-        <div class="mt-4 d-flex gap-3 flex-wrap">
-          <a href="halamanTempatEdukatif.php" class="cta-btn" style="color:var(--biru);">🗺️ Jelajahi Tempat</a>
-          <a href="tentangKami.php" class="cta-btn outline">Tentang Kami →</a>
+        <div class="mt-4">
+          <a href="tentangKami.php" class="btn px-5 py-3" style="background:rgba(255,255,255,0.15); color:white; border:2px solid white; border-radius:999px; font-weight:700; font-size:15px; text-decoration:none; backdrop-filter:blur(4px);">Tentang Kami →</a>
         </div>
       </div>
-      <div class="col-lg-6 d-none d-lg-block">
+      <div class="col-lg-6">
         <div class="hero-emoji-grid">
-          <div class="hero-emoji-card"><span class="emo">🗺️</span><span class="lbl">Peta Edu</span></div>
-          <div class="hero-emoji-card"><span class="emo">🎓</span><span class="lbl">Beasiswa</span></div>
-          <div class="hero-emoji-card"><span class="emo">🏆</span><span class="lbl">Lomba</span></div>
-          <div class="hero-emoji-card"><span class="emo">⭐</span><span class="lbl">Rating</span></div>
-          <div class="hero-emoji-card"><span class="emo">📍</span><span class="lbl">Lokasi</span></div>
-          <div class="hero-emoji-card"><span class="emo">🔍</span><span class="lbl">Cari Info</span></div>
+          <a href="halamanTempatEdukatif.php" class="hero-emoji-card">
+            <span class="emo">🗺️</span>
+            <span class="lbl">Peta Edu</span>
+          </a>
+          <a href="halamanBeasiswa.php" class="hero-emoji-card">
+            <span class="emo">🎓</span>
+            <span class="lbl">Beasiswa</span>
+          </a>
+          <a href="halamanLomba.php" class="hero-emoji-card">
+            <span class="emo">🏆</span>
+            <span class="lbl">Lomba</span>
+          </a>
         </div>
       </div>
     </div>
@@ -325,22 +432,121 @@ $jmlUser     = mysqli_fetch_row(mysqli_query($conn, "SELECT COUNT(*) FROM user")
   </div>
 </section>
 
-<!-- CTA BANNER -->
-<section class="py-5">
+<!-- FOOTER -->
+<footer class="custom-footer">
   <div class="container">
-    <div class="cta-banner">
-      <h2>Punya info tempat belajar yang belum terdaftar?</h2>
-      <p>Bantu sesama pelajar dengan mengajukan tempat edukatif favoritmu. Proses review cepat — 1–3 hari kerja!</p>
-      <a href="halamanTempatEdukatif.php" class="cta-btn">🗺️ Lihat Peta Edukatif</a>
-      <a href="PengajuanTempat.php" class="cta-btn outline">📍 Ajukan Tempat</a>
+    <div class="row gy-4 header-footer-space">
+      <div class="col-lg-4 col-md-6 text-white text-opacity-75">
+        <h4 class="footer-logo mb-3">19JutaPendidikan</h4>
+        <p class="footer-desc">
+          Platform digital untuk memetakan dan meningkatkan akses pendidikan di seluruh Indonesia, mendukung pemerataan kesempatan belajar bagi semua.
+        </p>
+      </div>
+
+      <div class="col-lg-2 col-md-6">
+        <h5 class="footer-heading mb-3">Tautan Cepat</h5>
+        <ul class="list-unstyled footer-links">
+          <li><a href="tentangKami.php">Tentang Kami</a></li>
+          <li><a href="halamanTempatEdukatif.php">Peta Akses</a></li>
+          <li><a href="halamanLomba.php">Lomba</a></li>
+          <li><a href="halamanBeasiswa.php">Beasiswa</a></li>
+          <li><a href="blog.php">Berita Edukasi</a></li>
+        </ul>
+      </div>
+
+      <div class="col-lg-3 col-md-6">
+        <h5 class="footer-heading mb-3">Hubungi Kami</h5>
+        <ul class="list-unstyled footer-contact">
+          <li><i class="fa-regular fa-envelope me-2"></i> info@19jutapendidikan.id</li>
+          <li><i class="fa-solid fa-phone me-2"></i> +62 21 1234 5678</li>
+          <li><i class="fa-solid fa-location-dot me-2"></i> Jakarta, Indonesia</li>
+        </ul>
+      </div>
+
+      <div class="col-lg-3 col-md-6">
+        <h5 class="footer-heading mb-3">Ikuti Kami</h5>
+        <p class="text-white text-opacity-75 footer-desc mb-3">
+          Dapatkan update terbaru tentang program dan inisiatif pendidikan
+        </p>
+        
+        <!-- 3 IKON SOSIAL MEDIA -->
+        <div class="footer-socials d-flex gap-2">
+          <!-- WhatsApp -->
+          <a href="https://wa.me/6281234567890" 
+             target="_blank" 
+             rel="noopener noreferrer"
+             class="social-icon" 
+             title="Chat via WhatsApp">
+            <i class="fa-brands fa-whatsapp"></i>
+          </a>
+          
+          <!-- Instagram -->
+          <a href="https://instagram.com/19jutapendidikan" 
+             target="_blank" 
+             rel="noopener noreferrer"
+             class="social-icon" 
+             title="Follow Instagram">
+            <i class="fa-brands fa-instagram"></i>
+          </a>
+          
+          <!-- Copy Link Website -->
+          <a href="javascript:void(0);" 
+             onclick="salinLinkWebsite()" 
+             class="social-icon" 
+             id="btnCopyLink"
+             title="Salin Link Website">
+            <i class="fa-solid fa-link" id="iconLink"></i>
+          </a>
+        </div>
+        
+        <!-- Notifikasi saat link berhasil disalin -->
+        <div id="notifCopy" style="display:none; margin-top:10px; font-size:12px; color:#35c7b6; font-weight:600;">
+          ✅ Link berhasil disalin ke clipboard!
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-bottom d-flex flex-column flex-md-row justify-content-between text-center text-md-start pt-4 mt-5">
+      <p class="mb-2 mb-md-0">&copy; 2026 19JutaPendidikan. All rights reserved.</p>
+      <div class="footer-bottom-links d-flex gap-3 justify-content-center">
+        <a href="#">Kebijakan Privasi</a>
+        <a href="#">Syarat & Ketentuan</a>
+      </div>
     </div>
   </div>
-</section>
-
-<footer>
-  <p>© 2025 19JutaPendidikan — Kelompok 3 · Dibuat dengan ❤️ untuk pendidikan Indonesia.</p>
 </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  function salinLinkWebsite() {
+    const urlWebsite = window.location.origin;
+    
+    navigator.clipboard.writeText(urlWebsite).then(() => {
+      const iconLink = document.getElementById('iconLink');
+      iconLink.classList.remove('fa-link');
+      iconLink.classList.add('fa-check');
+      
+      const notif = document.getElementById('notifCopy');
+      notif.style.display = 'block';
+      
+      setTimeout(() => {
+        iconLink.classList.remove('fa-check');
+        iconLink.classList.add('fa-link');
+        notif.style.display = 'none';
+      }, 2000);
+    }).catch(err => {
+      const tempInput = document.createElement('input');
+      tempInput.value = urlWebsite;
+      document.body.appendChild(tempInput);
+      tempInput.select();
+      document.execCommand('copy');
+      document.body.removeChild(tempInput);
+      
+      const notif = document.getElementById('notifCopy');
+      notif.style.display = 'block';
+      setTimeout(() => { notif.style.display = 'none'; }, 2000);
+    });
+  }
+</script>
 </body>
 </html>

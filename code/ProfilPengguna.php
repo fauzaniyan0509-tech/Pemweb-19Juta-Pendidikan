@@ -18,14 +18,14 @@ $pesan_sukses = '';
 $pesan_error  = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['simpan_profil'])) {
-    $nama_baru  = mysqli_real_escape_string($conn, trim($_POST['nama']));
-    $email_baru = mysqli_real_escape_string($conn, trim($_POST['email']));
+    $nama_baru  = mysqli_real_escape_string($koneksi, trim($_POST['nama']));
+    $email_baru = mysqli_real_escape_string($koneksi, trim($_POST['email']));
 
     if (empty($nama_baru) || empty($email_baru)) {
         $pesan_error = 'Nama dan Email tidak boleh kosong.';
     } else {
         // Cek email duplikat (selain user ini sendiri)
-        $cek = mysqli_query($conn, "SELECT id_user FROM user WHERE email = '$email_baru' AND id_user != $id_user");
+        $cek = mysqli_query($koneksi, "SELECT id_user FROM user WHERE email = '$email_baru' AND id_user != $id_user");
         if (mysqli_num_rows($cek) > 0) {
             $pesan_error = 'Email sudah dipakai akun lain.';
         } else {
@@ -42,8 +42,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['simpan_profil'])) {
                 }
             }
 
-            $foto_esc = mysqli_real_escape_string($conn, $foto_baru);
-            mysqli_query($conn, "UPDATE user SET nama='$nama_baru', email='$email_baru', foto_profil='$foto_esc' WHERE id_user=$id_user");
+            $foto_esc = mysqli_real_escape_string($koneksi, $foto_baru);
+            mysqli_query($koneksi, "UPDATE user SET nama='$nama_baru', email='$email_baru', foto_profil='$foto_esc' WHERE id_user=$id_user");
 
             // Update session agar navbar langsung berubah
             $_SESSION['nama']        = $nama_baru;
@@ -56,42 +56,64 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['simpan_profil'])) {
 }
 
 // ── 2. AMBIL DATA USER TERBARU DARI DB ────────────────────
-$q_user = mysqli_query($conn, "SELECT * FROM user WHERE id_user = $id_user LIMIT 1");
+$q_user = mysqli_query($koneksi, "SELECT * FROM user WHERE id_user = $id_user LIMIT 1");
 $user   = mysqli_fetch_assoc($q_user);
 
 $nama_tampil  = htmlspecialchars($user['nama'] ?? $_SESSION['nama'] ?? 'Pengguna');
 $email_tampil = htmlspecialchars($user['email'] ?? $_SESSION['email'] ?? '-');
 $foto_file    = !empty($user['foto_profil']) ? 'uploads/' . $user['foto_profil'] : '';
 
-// ── 3. RIWAYAT PENGAJUAN LOMBA USER ──────────────────────
-$q_lomba = mysqli_query($conn,
-    "SELECT l.judul_lomba, il.judul_iklan, il.paket_langganan, il.status_verifikasi, p.jumlah, p.tanggal_bayar
+// ── 3. HITUNG TOTAL PENGAJUAN (AKURAT, TANPA LIMIT) ───────
+$total_lomba = mysqli_fetch_assoc(
+    mysqli_query($koneksi, "SELECT COUNT(*) as total FROM iklan_lomba WHERE id_user = $id_user")
+)['total'];
+
+$total_beasiswa = mysqli_fetch_assoc(
+    mysqli_query($koneksi, "SELECT COUNT(*) as total FROM iklan_beasiswa WHERE id_user = $id_user")
+)['total'];
+
+// Hitung juga yang disetujui untuk statistik detail
+$stat_lomba_disetujui = mysqli_fetch_assoc(
+    mysqli_query($koneksi, "SELECT COUNT(*) as total FROM iklan_lomba WHERE id_user = $id_user AND status_verifikasi = 'disetujui'")
+)['total'];
+
+$stat_beasiswa_disetujui = mysqli_fetch_assoc(
+    mysqli_query($koneksi, "SELECT COUNT(*) as total FROM iklan_beasiswa WHERE id_user = $id_user AND status_verifikasi = 'disetujui'")
+)['total'];
+
+// ── 4. RIWAYAT PENGAJUAN LOMBA USER (TAMPILKAN SEMUA) ─────
+// Menggunakan tanggal_bayar dari tabel pembayaran
+$q_lomba = mysqli_query($koneksi,
+    "SELECT 
+        l.judul_lomba, 
+        il.judul_iklan, 
+        il.paket_langganan, 
+        il.status_verifikasi, 
+        p.jumlah, 
+        p.tanggal_bayar
      FROM iklan_lomba il
-     JOIN lomba l ON il.id_lomba = l.id_lomba
-     JOIN pembayaran p ON il.id_pembayaran = p.id_pembayaran
+     LEFT JOIN lomba l ON il.id_lomba = l.id_lomba
+     LEFT JOIN pembayaran p ON il.id_pembayaran = p.id_pembayaran
      WHERE il.id_user = $id_user
-     ORDER BY p.tanggal_bayar DESC
-     LIMIT 5"
+     ORDER BY il.id_iklan DESC"
 );
 
-// ── 4. RIWAYAT PENGAJUAN BEASISWA USER ───────────────────
-$q_beasiswa = mysqli_query($conn,
-    "SELECT b.nama_beasiswa, ib.judul_iklan, ib.paket_langganan, ib.status_verifikasi, p.jumlah, p.tanggal_bayar
+// ── 5. RIWAYAT PENGAJUAN BEASISWA USER (TAMPILKAN SEMUA) ──
+// Menggunakan tanggal_bayar dari tabel pembayaran
+$q_beasiswa = mysqli_query($koneksi,
+    "SELECT 
+        b.nama_beasiswa, 
+        ib.judul_iklan, 
+        ib.paket_langganan, 
+        ib.status_verifikasi,
+        p.jumlah, 
+        p.tanggal_bayar
      FROM iklan_beasiswa ib
-     JOIN beasiswa b ON ib.id_beasiswa = b.id_beasiswa
-     JOIN pembayaran p ON ib.id_pembayaran = p.id_pembayaran
+     LEFT JOIN beasiswa b ON ib.id_beasiswa = b.id_beasiswa
+     LEFT JOIN pembayaran p ON ib.id_pembayaran = p.id_pembayaran
      WHERE ib.id_user = $id_user
-     ORDER BY p.tanggal_bayar DESC
-     LIMIT 5"
+     ORDER BY ib.id_iklan DESC"
 );
-
-// ── 5. HITUNG TOTAL PENGAJUAN ─────────────────────────────
-$total_lomba    = mysqli_num_rows($q_lomba);
-$total_beasiswa = $q_beasiswa ? mysqli_num_rows($q_beasiswa) : 0;
-
-// Reset pointer agar bisa di-loop lagi
-mysqli_data_seek($q_lomba, 0);
-if ($q_beasiswa) mysqli_data_seek($q_beasiswa, 0);
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -299,21 +321,27 @@ if ($q_beasiswa) mysqli_data_seek($q_beasiswa, 0);
             <div class="card-custom stat-card">
               <div class="stat-icon">🏆</div>
               <div class="stat-number"><?= $total_lomba ?></div>
-              <p class="stat-label">Lomba Diajukan</p>
+              <p class="stat-label">Total Lomba Diajukan</p>
+              <small class="text-muted" style="font-size:11px;">
+                ✅ <?= $stat_lomba_disetujui ?> disetujui
+              </small>
             </div>
           </div>
           <div class="col-md-6">
             <div class="card-custom stat-card">
               <div class="stat-icon">🎓</div>
               <div class="stat-number"><?= $total_beasiswa ?></div>
-              <p class="stat-label">Beasiswa Diajukan</p>
+              <p class="stat-label">Total Beasiswa Diajukan</p>
+              <small class="text-muted" style="font-size:11px;">
+                ✅ <?= $stat_beasiswa_disetujui ?> disetujui
+              </small>
             </div>
           </div>
         </div>
 
         <!-- RIWAYAT PENGAJUAN LOMBA -->
         <div class="card-custom p-4 mb-4">
-          <h4 class="section-title">Riwayat Pengajuan Lomba</h4>
+          <h4 class="section-title">Riwayat Pengajuan Lomba (<?= $total_lomba ?>)</h4>
 
           <?php if ($total_lomba > 0): ?>
             <?php while ($r = mysqli_fetch_assoc($q_lomba)):
@@ -328,15 +356,17 @@ if ($q_beasiswa) mysqli_data_seek($q_beasiswa, 0);
                 'ditolak'   => 'Ditolak',
                 default     => 'Menunggu',
               };
+              // Gunakan tanggal_bayar dari tabel pembayaran
+              $tanggal_tampil = $r['tanggal_bayar'] ?? date('Y-m-d H:i:s');
             ?>
             <div class="activity-item">
               <div class="activity-icon">🏆</div>
               <div style="flex:1; min-width:0;">
-                <div class="activity-title"><?= htmlspecialchars($r['judul_lomba']) ?></div>
+                <div class="activity-title"><?= htmlspecialchars($r['judul_lomba'] ?? $r['judul_iklan'] ?? 'Lomba') ?></div>
                 <p class="activity-desc">
                   <?= htmlspecialchars($r['paket_langganan']) ?> &bull;
-                  Rp <?= number_format($r['jumlah'], 0, ',', '.') ?> &bull;
-                  <?= date('d M Y', strtotime($r['tanggal_bayar'])) ?>
+                  Rp <?= number_format($r['jumlah'] ?? 0, 0, ',', '.') ?> &bull;
+                  <?= date('d M Y', strtotime($tanggal_tampil)) ?>
                 </p>
               </div>
               <div class="activity-right">
@@ -354,7 +384,7 @@ if ($q_beasiswa) mysqli_data_seek($q_beasiswa, 0);
 
         <!-- RIWAYAT PENGAJUAN BEASISWA -->
         <div class="card-custom p-4">
-          <h4 class="section-title">Riwayat Pengajuan Beasiswa</h4>
+          <h4 class="section-title">Riwayat Pengajuan Beasiswa (<?= $total_beasiswa ?>)</h4>
 
           <?php if ($total_beasiswa > 0): ?>
             <?php while ($r = mysqli_fetch_assoc($q_beasiswa)):
@@ -369,15 +399,17 @@ if ($q_beasiswa) mysqli_data_seek($q_beasiswa, 0);
                 'ditolak'   => 'Ditolak',
                 default     => 'Menunggu',
               };
+              // Gunakan tanggal_bayar dari tabel pembayaran
+              $tanggal_tampil = $r['tanggal_bayar'] ?? date('Y-m-d H:i:s');
             ?>
             <div class="activity-item">
               <div class="activity-icon">🎓</div>
               <div style="flex:1; min-width:0;">
-                <div class="activity-title"><?= htmlspecialchars($r['nama_beasiswa']) ?></div>
+                <div class="activity-title"><?= htmlspecialchars($r['nama_beasiswa'] ?? $r['judul_iklan'] ?? 'Beasiswa') ?></div>
                 <p class="activity-desc">
                   <?= htmlspecialchars($r['paket_langganan']) ?> &bull;
-                  Rp <?= number_format($r['jumlah'], 0, ',', '.') ?> &bull;
-                  <?= date('d M Y', strtotime($r['tanggal_bayar'])) ?>
+                  Rp <?= number_format($r['jumlah'] ?? 0, 0, ',', '.') ?> &bull;
+                  <?= date('d M Y', strtotime($tanggal_tampil)) ?>
                 </p>
               </div>
               <div class="activity-right">

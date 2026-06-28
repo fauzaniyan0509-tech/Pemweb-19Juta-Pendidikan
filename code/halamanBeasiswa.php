@@ -214,26 +214,39 @@ include 'penghubung.php';
       box-shadow: 0 22px 48px rgba(20, 33, 61, 0.15);
     }
 
-    .scholarship-img {
-      height: 280px; 
-      background: linear-gradient(135deg, #dbeafe, #ccfbf1);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 52px;
-      position: relative;
-      overflow: hidden; 
-    }
+/* Ganti seluruh blok .scholarship-img dan .poster-beasiswa dengan ini */
+.scholarship-img {
+  height: 340px; /* Tinggi diperbesar untuk format portrait */
+  background: #f1f5f9; /* Warna background abu-abu muda seperti di gambar */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  border-radius: 20px 20px 0 0;
+}
 
-    .poster-beasiswa {
-      width: 100%;
-      height: 100%;
-      object-fit: cover; 
-      position: absolute;
-      top: 0;
-      left: 0;
-      border-radius: 20px 20px 0 0;
-    }
+.poster-beasiswa {
+  width: 85%; /* Lebar tidak full agar ada jarak di kiri-kanan */
+  height: 90%; /* Tinggi tidak full agar ada jarak di atas-bawah */
+  object-fit: contain; /* KUNCI: Agar seluruh poster terlihat utuh tanpa terpotong */
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.08); /* Efek bayangan halus agar elegan */
+  position: relative; /* Diubah dari absolute agar bisa di-tengah-kan dengan flexbox */
+}
+
+/* Responsive untuk tablet & mobile */
+@media (max-width: 991px) {
+  .scholarship-img {
+    height: 300px;
+  }
+}
+
+@media (max-width: 576px) {
+  .scholarship-img {
+    height: 260px;
+  }
+}
 
     .badge-level {
       position: absolute;
@@ -353,6 +366,18 @@ include 'penghubung.php';
         padding: 12px;
       }
     }
+    /* Responsif untuk mobile */
+    @media (max-width: 768px) {
+      .scholarship-img {
+        height: 180px; /* Lebih pendek lagi di mobile */
+        aspect-ratio: 16/9;
+      }
+      
+      .scholarship-img .emoji {
+        font-size: 42px;
+      }
+    }
+    
   </style>
 </head>
 

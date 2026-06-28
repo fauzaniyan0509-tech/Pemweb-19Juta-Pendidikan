@@ -179,21 +179,35 @@ foreach (['menunggu','disetujui','ditolak'] as $s) {
 
   <!-- SIDEBAR -->
   <aside class="sidebar">
-    <span class="logo-text">19JutaAdmin</span>
-    <a class="menu-item" href="adminDashboard.php">📊 Dashboard</a>
-    <a class="menu-item" href="halamanKelolaLomba.php">🏆 Kelola Lomba</a>
-    <a class="menu-item" href="halamanKelolaBeasiswa.php">🎓 Kelola Beasiswa</a>
-    <a href="#" class="menu-item menu-toggle active" data-bs-toggle="collapse" data-bs-target="#submenuTempat" role="button" aria-expanded="true">
-      <span>📍 Kelola Tempat / Peta</span>
-      <span class="chevron">▾</span>
-    </a>
-    <div class="collapse show submenu" id="submenuTempat">
-      <a href="halamanKelolaTempat.php" class="menu-item submenu-item">📋 Daftar Tempat</a>
-      <a href="HalamanVerifikasiTempat.php" class="menu-item submenu-item active">✅ Verifikasi Pengajuan</a>
-    </div>
-    <a class="menu-item" href="halamanVerifikasi.php">📋 Verifikasi Iklan</a>
-    <a href="logout.php" class="menu-item logout">🚪 Logout</a>
-  </aside>
+  <div class="logo-text">19JutaAdmin</div>
+  
+  <div class="menu-label">Navigasi Utama</div>
+  <a href="adminDashboard.php" class="menu-item">📊 Dashboard</a>
+  
+  <div class="menu-label">Manajemen Data</div>
+  <a href="halamanKelolaLomba.php" class="menu-item">🏆 Kelola Lomba</a>
+  <a href="halamanKelolaBeasiswa.php" class="menu-item">🎓 Kelola Beasiswa</a>
+  <a href="#" class="menu-item menu-toggle active" data-bs-toggle="collapse" data-bs-target="#submenuTempat" role="button" aria-expanded="true">
+    <span>📍 Kelola Tempat / Peta</span>
+    <span class="chevron">▾</span>
+  </a>
+  <div class="collapse show submenu" id="submenuTempat">
+    <a href="halamanKelolaTempat.php" class="menu-item submenu-item">📋 Daftar Tempat</a>
+    <a href="HalamanVerifikasiTempat.php" class="menu-item submenu-item active">✅ Verifikasi Pengajuan</a>
+  </div>
+  <a href="halamanKelolaFiturBeranda.php" class="menu-item">🏠 Kelola Fitur Beranda</a>
+  <a href="halamanKelolaBlog.php" class="menu-item">📝 Kelola Blog</a>
+  
+  <a href="kelolaTransaksi.php" class="menu-item">💳 Kelola Transaksi</a>
+  
+  <div class="menu-label">Sistem Validasi</div>
+  <a href="halamanVerifikasi.php" class="menu-item" id="menu-verif-sidebar">
+    ✅ Verifikasi Iklan 
+    <span id="badge-notif" class="badge bg-danger ms-auto" style="display: none; font-size: 11px; border-radius: 50%;">0</span>
+  </a>
+
+  <a href="penghubung.php?aksi=logout_admin" class="menu-item logout">🚪 Logout</a>
+</aside>
 
   <main class="main-content">
 
@@ -487,11 +501,33 @@ foreach (['menunggu','disetujui','ditolak'] as $s) {
 </div>
 
 <script>
+    let lastPendingCount = 0;
+
   function toggleDetail(btn) {
     const body = btn.closest('.kartu-pengajuan').querySelector('.kartu-body');
     body.classList.toggle('terbuka');
     btn.textContent = body.classList.contains('terbuka') ? 'Tutup ▴' : 'Lihat Detail ▾';
   }
+  function periksaNotifikasi() {
+    fetch('penghubung.php?aksi=cek_notif')
+      .then(response => response.json())
+      .then(data => {
+        let currentPending = data.total_pending;
+        let badge = document.getElementById('badge-notif');
+
+        if (currentPending > 0) {
+          badge.textContent = currentPending;
+          badge.style.display = 'inline-block';
+        } else {
+          badge.style.display = 'none';
+        }
+
+        lastPendingCount = currentPending;
+      })
+      .catch(error => console.error('Gagal mengambil notifikasi:', error));
+  }
+  periksaNotifikasi();
+  setInterval(periksaNotifikasi, 5000);
 </script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>

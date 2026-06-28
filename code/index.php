@@ -7,6 +7,7 @@
     <title>Landing Page - 19JutaPendidikan</title>
     
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <link rel="stylesheet" href="landingpage.css">
 </head>
@@ -79,12 +80,11 @@
                 <div class="col-lg-2 col-md-6">
                     <h5 class="footer-heading mb-3">Tautan Cepat</h5>
                     <ul class="list-unstyled footer-links">
-                        <li><a href="#">Tentang Kami</a></li>
-                        <li><a href="#">Peta Akses</a></li>
-                        <li><a href="halamanLomba.html">Lomba</a></li> 
-                        <li><a href="#">Beasiswa</a></li>
-                        <li><a href="#">Seminar & Event</a></li>
-                        <li><a href="#">Berita Edukasi</a></li>
+                        <li><a href="tentangKami.php">Tentang Kami</a></li>
+                        <li><a href="halamanTempatEdukatif.php">Peta Akses</a></li>
+                        <li><a href="halamanLomba.php">Lomba</a></li> 
+                        <li><a href="halamanBeasiswa.php">Beasiswa</a></li>
+                        <li><a href="blog.php">Berita Edukasi</a></li>
                     </ul>
                 </div>
 
@@ -102,11 +102,40 @@
                     <p class="text-white text-opacity-75 footer-desc mb-3">
                         Dapatkan update terbaru tentang program dan inisiatif pendidikan
                     </p>
+                    
+                    <!-- ═══ BAGIAN YANG DIUBAH: 3 IKON SOSIAL MEDIA ═══ -->
                     <div class="footer-socials d-flex gap-2">
-                        <a href="#"><i class="fa-brands fa-facebook-f"></i></a>
-                        <a href="#"><i class="fa-brands fa-twitter"></i></a>
-                        <a href="#"><i class="fa-brands fa-instagram"></i></a>
-                        <a href="#"><i class="fa-brands fa-linkedin-in"></i></a>
+                        <!-- WhatsApp -->
+                        <a href="https://wa.me/6281234567890" 
+                           target="_blank" 
+                           rel="noopener noreferrer"
+                           class="social-icon" 
+                           title="Chat via WhatsApp">
+                            <i class="fa-brands fa-whatsapp"></i>
+                        </a>
+                        
+                        <!-- Instagram -->
+                        <a href="https://instagram.com/19jutapendidikan" 
+                           target="_blank" 
+                           rel="noopener noreferrer"
+                           class="social-icon" 
+                           title="Follow Instagram">
+                            <i class="fa-brands fa-instagram"></i>
+                        </a>
+                        
+                        <!-- Copy Link Website -->
+                        <a href="javascript:void(0);" 
+                           onclick="salinLinkWebsite()" 
+                           class="social-icon" 
+                           id="btnCopyLink"
+                           title="Salin Link Website">
+                            <i class="fa-solid fa-link" id="iconLink"></i>
+                        </a>
+                    </div>
+                    
+                    <!-- Notifikasi kecil saat link berhasil disalin -->
+                    <div id="notifCopy" style="display:none; margin-top:10px; font-size:12px; color:#35c7b6; font-weight:600;">
+                        ✅ Link berhasil disalin ke clipboard!
                     </div>
                 </div>
             </div>
@@ -122,5 +151,38 @@
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+    
+    <!-- ═══ SCRIPT UNTUK COPY LINK ═══ -->
+    <script>
+        function salinLinkWebsite() {
+            // Ambil URL website saat ini
+            const urlWebsite = window.location.href;
+            
+            // Gunakan Clipboard API untuk menyalin
+            navigator.clipboard.writeText(urlWebsite).then(() => {
+                // Ubah ikon link jadi checkmark sementara
+                const iconLink = document.getElementById('iconLink');
+                iconLink.classList.remove('fa-link');
+                iconLink.classList.add('fa-check');
+                
+                // Tampilkan notifikasi
+                const notif = document.getElementById('notifCopy');
+                notif.style.display = 'block';
+                
+                // Kembalikan ke kondisi semula setelah 2 detik
+                setTimeout(() => {
+                    iconLink.classList.remove('fa-check');
+                    iconLink.classList.add('fa-link');
+                    notif.style.display = 'none';
+                }, 2000);
+            }).catch(err => {
+                // Fallback untuk browser lama
+                const tempInput = document.createElement('input');
+                tempInput.value = urlWebsite;
+                document.body.appendChild(tempInput);
+                tempInput.select();
+                document.execCommand('copy');
+                document.body.removeChild(tempInput);
+                alert('Link berhasil disalin: ' + urlWebsite);
+            });
+        }

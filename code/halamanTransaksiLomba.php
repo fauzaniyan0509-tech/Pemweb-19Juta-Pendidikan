@@ -176,7 +176,7 @@ include 'penghubung.php';
                 <select name="tingkat_lomba" id="tingkat_lomba" class="form-select" required>
                   <option value=""></option>
                   <option value="Kabupaten / Kota">Kabupaten / Kota</option>
-                  <option value="Regional">Regional / Provinsi</option>
+                  <option value="Regional">Provinsi</option>
                   <option value="Nasional">Nasional</option>
                   <option value="Internasional">Internasional</option>
                 </select>

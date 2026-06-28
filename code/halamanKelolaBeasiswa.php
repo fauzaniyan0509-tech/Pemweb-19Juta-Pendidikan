@@ -175,7 +175,7 @@ $total_menunggu = $data_menunggu['total'] ?? 0;
       <a href="halamanKelolaFiturBeranda.php" class="menu-item">🏠 Kelola Fitur Beranda</a>
       <a href="halamanKelolaBlog.php" class="menu-item">📝 Kelola Blog</a>
       
-      <a href="halamanKelolaTransaksi.php" class="menu-item">💳 Kelola Transaksi</a>
+      <a href="kelolaTransaksi.php" class="menu-item">💳 Kelola Transaksi</a>
       
       <div class="menu-label">Sistem Validasi</div>
       <a href="halamanVerifikasi.php" class="menu-item" id="menu-verif-sidebar">
@@ -183,8 +183,6 @@ $total_menunggu = $data_menunggu['total'] ?? 0;
         <span id="badge-notif" class="badge bg-danger ms-auto" style="display: none; font-size: 11px; border-radius: 50%;">0</span>
       </a>
 
-      <div class="menu-label">Pengaturan</div>
-      <a href="halamanKelolaUser.php" class="menu-item">👥 Kelola Pengguna</a>
       <a href="logout.php" class="menu-item logout">🚪 Logout</a>
     </aside>
 

@@ -1,6 +1,5 @@
 <?php
 include 'penghubung.php';
- // Pastikan file koneksi ada
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -15,14 +14,14 @@ include 'penghubung.php';
 
   <nav class="navbar navbar-expand-lg py-3">
     <div class="container">
-      <a class="logo-text" href="#">19JutaPendidikan</a>
+      <a class="logo-text" href="beranda.php">19JutaPendidikan</a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
         <ul class="navbar-nav align-items-center gap-lg-4">
           <li class="nav-item"><a class="nav-link" href="beranda.php">Beranda</a></li>
-          <li class="nav-item"><a class="nav-link active" href="halamanLomba">Lomba</a></li>
+          <li class="nav-item"><a class="nav-link active" href="halamanLomba.php">Lomba</a></li>
           <li class="nav-item"><a class="btn-gradient" href="halamanTransaksiLomba.php">Publikasi Lomba</a></li>
         </ul>
       </div>
@@ -108,38 +107,46 @@ include 'penghubung.php';
 
         <div class="row g-4" id="lombaGrid">
           <?php
-          // 1. String SQL Query mengambil data lomba yang disetujui & belum lewat deadline
+          // Fungsi normalisasi tingkat lomba: "Regional" → "Provinsi"
+          function normalisasiTingkat($tingkat) {
+              $tingkat = trim($tingkat);
+              // Ubah "Regional" menjadi "Provinsi"
+              if (stripos($tingkat, 'regional') !== false) {
+                  return 'Provinsi';
+              }
+              // Kapitalisasi pertama huruf
+              return ucwords(strtolower($tingkat));
+          }
+
+          // Ambil data lomba yang disetujui & belum lewat deadline
           $query_string = "SELECT l.* FROM lomba l 
                            JOIN iklan_lomba i ON l.id_lomba = i.id_lomba 
                            WHERE i.status_verifikasi = 'disetujui' AND l.deadline >= CURDATE()";
           
-          // 2. Eksekusi query ke database menggunakan $conn dari koneksi.php
           $list_lomba = mysqli_query($conn, $query_string);
 
-          // 3. Cek apakah ada data lomba yang ditemukan
           if ($list_lomba && mysqli_num_rows($list_lomba) > 0) {
-              
-              // 4. Looping data secara sinkron menggunakan $list_lomba
               while ($row = mysqli_fetch_assoc($list_lomba)) {
-                  
-                  // Cek ketersediaan file poster, jika kosong gunakan default.jpg
                   $file_poster = !empty($row['poster']) ? $row['poster'] : 'default.jpg';
+                  
+                  // ═══ NORMALISASI TINGKAT LOMBA ═══
+                  $tingkat_tampil = normalisasiTingkat($row['tingkat_lomba']);
           ?>
               <div class="col-md-6 lomba-item"
                 data-title="<?= htmlspecialchars(strtolower($row['judul_lomba'])) ?>"
-                data-kategori="<?= htmlspecialchars($row['kategori'] ?? 'Umum') ?>"
-                data-tingkat="<?= htmlspecialchars($row['tingkat_lomba'] ?? 'Nasional') ?>"
+                data-kategori="<?= htmlspecialchars(strtolower($row['kategori'] ?? 'Umum')) ?>"
+                data-tingkat="<?= htmlspecialchars(strtolower($tingkat_tampil)) ?>"
                 data-biaya="<?= htmlspecialchars(strtolower($row['tipe_biaya'] ?? 'Gratis')) ?>">
                 
                 <div class="card-custom lomba-card">
-                  <div class="lomba-img <?= htmlspecialchars($row['kategori'] ?? 'Umum') ?>">
+                  <div class="lomba-img">
                     <img src="uploads/<?= htmlspecialchars($file_poster) ?>" 
                         alt="Poster <?= htmlspecialchars($row['judul_lomba']) ?>" 
                         class="poster-lomba"
                         style="width: 100%; aspect-ratio: 16/9; object-fit: contain; background-color: #f4f7f6; border-radius: 12px 12px 0 0;">
                          
-                    <span class="badge-kategori"><?= htmlspecialchars($row['kategori'] ?? 'Umum') ?></span>
-                    <span class="badge-tingkat"><?= htmlspecialchars($row['tingkat_lomba'] ?? 'Nasional') ?></span>
+                    <span class="badge-kategori"><?= htmlspecialchars(ucwords(strtolower($row['kategori'] ?? 'Umum'))) ?></span>
+                    <span class="badge-tingkat"><?= htmlspecialchars($tingkat_tampil) ?></span>
                   </div>
                   <div class="lomba-body">
                     <h4 class="lomba-title"><?= htmlspecialchars($row['judul_lomba']) ?></h4>
@@ -154,7 +161,7 @@ include 'penghubung.php';
                 </div>
               </div>
           <?php
-              } // Akhir perulangan while
+              }
           } else {
               echo "<div class='col-12 text-center py-5'><h5 class='text-muted'>Belum ada lomba yang dipublikasikan.</h5></div>";
           }
@@ -167,12 +174,10 @@ include 'penghubung.php';
 
   <script>
     function filterLomba() {
-      // 1. Ambil kata kunci dari pencarian
       const heroSearch = document.getElementById('heroSearch').value.toLowerCase();
       const sideSearch = document.getElementById('sideSearch').value.toLowerCase();
       const searchText = heroSearch || sideSearch;
 
-      // 2. Ambil nilai checkbox mana saja yang sedang dicentang (Ubah ke array lowercase)
       const checkedKategori = Array.from(document.querySelectorAll('.filter-kategori:checked')).map(cb => cb.value.toLowerCase());
       const checkedTingkat  = Array.from(document.querySelectorAll('.filter-tingkat:checked')).map(cb => cb.value.toLowerCase());
       const checkedBiaya    = Array.from(document.querySelectorAll('.filter-biaya:checked')).map(cb => cb.value.toLowerCase());
@@ -181,21 +186,19 @@ include 'penghubung.php';
       let visibleCount = 0;
 
       items.forEach(item => {
-        // Ambil data atribut HTML dari element PHP
         const title       = item.dataset.title.toLowerCase();
         const itemKat     = item.dataset.kategori.toLowerCase();
         const itemTingkat = item.dataset.tingkat.toLowerCase();
         const itemBiaya   = item.dataset.biaya.toLowerCase();
 
-        // 3. Evaluasi Kecocokan Kriteria
-        const matchSearch  = searchText === '' || title.includes(searchText);
-        
-        // Jika tidak ada checkbox dicentang, otomatis dianggap true (Lolos filter)
-        const matchKat     = checkedKategori.length === 0 || checkedKategori.includes(itemKat);
-        const matchTingkat = checkedTingkat.length === 0  || checkedTingkat.includes(itemTingkat);
-        const matchBiaya   = checkedBiaya.length === 0    || checkedBiaya.includes(itemBiaya);
+        // Normalisasi: "regional" di data juga dianggap "provinsi"
+        const normalizedTingkat = itemTingkat === 'regional' ? 'provinsi' : itemTingkat;
 
-        // 4. Aksi Tampilan Elemen Grid
+        const matchSearch  = searchText === '' || title.includes(searchText);
+        const matchKat     = checkedKategori.length === 0 || checkedKategori.includes(itemKat);
+        const matchTingkat = checkedTingkat.length === 0 || checkedTingkat.includes(normalizedTingkat);
+        const matchBiaya   = checkedBiaya.length === 0 || checkedBiaya.includes(itemBiaya);
+
         if (matchSearch && matchKat && matchTingkat && matchBiaya) {
           item.style.display = 'block';
           visibleCount++;
@@ -204,24 +207,19 @@ include 'penghubung.php';
         }
       });
       
-      // Tampilkan jumlah hasil aktual di UI
       document.getElementById('resultText').textContent = `Menampilkan ${visibleCount} lomba`;
     }
 
     function resetFilter() {
-      // Kosongkan kolom pencarian
       document.getElementById('heroSearch').value = '';
       document.getElementById('sideSearch').value = '';
       
-      // Uncheck semua checkbox filter di sidebar
       const semuaCheckbox = document.querySelectorAll('.filter-card input[type="checkbox"]');
       semuaCheckbox.forEach(cb => cb.checked = false);
       
-      // Jalankan ulang fungsi filter agar menampilkan semua data kembali
       filterLomba(); 
     }
 
-    // Jalankan kalkulasi jumlah lomba pertama kali saat web selesai dimuat
     window.addEventListener('DOMContentLoaded', () => {
       const totalItems = document.querySelectorAll('.lomba-item').length;
       document.getElementById('resultText').textContent = `Menampilkan ${totalItems} lomba`;

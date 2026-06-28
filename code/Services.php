@@ -137,6 +137,165 @@ $jmlLomba    = mysqli_fetch_row(mysqli_query($conn, "SELECT COUNT(*) FROM lomba"
 
     footer { background: var(--gelap); color: white; padding: 24px 0; text-align: center; }
     footer p { margin: 0; font-size: 13px; opacity: .6; }
+    /* MODAL STYLES */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 41, 66, 0.75);
+  backdrop-filter: blur(6px);
+  z-index: 9999;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  animation: fadeIn 0.25s ease;
+}
+
+.modal-overlay.active {
+  display: flex;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { 
+    opacity: 0;
+    transform: translateY(30px) scale(0.95);
+  }
+  to { 
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.modal-content {
+  background: white;
+  border-radius: 28px;
+  padding: 40px 36px;
+  max-width: 720px;
+  width: 100%;
+  position: relative;
+  box-shadow: 0 25px 80px rgba(20, 143, 205, 0.25);
+  animation: slideUp 0.35s ease;
+}
+
+.modal-close {
+  position: absolute;
+  top: 20px;
+  right: 24px;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  border: none;
+  background: #f1f5f9;
+  color: #64748b;
+  font-size: 28px;
+  line-height: 1;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-close:hover {
+  background: #e2e8f0;
+  color: var(--gelap);
+  transform: rotate(90deg);
+}
+
+.modal-header {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.modal-header h3 {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: var(--gelap);
+  margin-bottom: 8px;
+}
+
+.modal-header p {
+  color: #64748b;
+  font-size: 14.5px;
+  margin: 0;
+}
+
+.modal-features {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+}
+
+.modal-feature-card {
+  background: white;
+  border: 2px solid #e2e8f0;
+  border-radius: 20px;
+  padding: 28px 22px;
+  text-align: center;
+  text-decoration: none;
+  transition: all 0.25s;
+  cursor: pointer;
+}
+
+.modal-feature-card:hover {
+  border-color: var(--biru);
+  transform: translateY(-6px);
+  box-shadow: 0 12px 32px rgba(20, 143, 205, 0.15);
+}
+
+.feature-icon {
+  width: 72px;
+  height: 72px;
+  border-radius: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.2rem;
+  margin: 0 auto 16px;
+}
+
+.modal-feature-card h4 {
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--gelap);
+  margin-bottom: 8px;
+}
+
+.modal-feature-card p {
+  font-size: 13px;
+  color: #64748b;
+  line-height: 1.6;
+  margin-bottom: 14px;
+}
+
+.feature-link {
+  display: inline-block;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--biru);
+  transition: gap 0.2s;
+}
+
+.modal-feature-card:hover .feature-link {
+  gap: 6px;
+}
+
+@media (max-width: 768px) {
+  .modal-content {
+    padding: 32px 24px;
+  }
+  .modal-header h3 {
+    font-size: 1.5rem;
+  }
+  .modal-features {
+    grid-template-columns: 1fr;
+  }
+}
   </style>
 </head>
 <body>
@@ -358,11 +517,46 @@ $jmlLomba    = mysqli_fetch_row(mysqli_query($conn, "SELECT COUNT(*) FROM lomba"
     <div class="cta-box">
       <h2>Siap mulai eksplorasi?</h2>
       <p>Temukan tempat belajar, beasiswa, dan lomba terbaik untukmu — semua gratis, semua di satu tempat.</p>
-      <a href="beranda.php" class="cta-lnk">🏠 Kembali ke Beranda</a>
-      <a href="halamanTempatEdukatif.php" class="cta-lnk outline">🗺️ Jelajahi Peta Edukatif</a>
+      <button onclick="openFiturModal()" class="cta-lnk">🚀 Jelajahi Semua Fitur</button>
+      <a href="beranda.php" class="cta-lnk outline">🏠 Kembali ke Beranda</a>
     </div>
   </div>
 </section>
+
+<!-- MODAL FITUR UTAMA -->
+<div id="fiturModal" class="modal-overlay" onclick="closeFiturModalOutside(event)">
+  <div class="modal-content" onclick="event.stopPropagation()">
+    <button class="modal-close" onclick="closeFiturModal()">×</button>
+    
+    <div class="modal-header">
+      <h3>Pilih Fitur yang Ingin Dijelajahi</h3>
+      <p>Temukan apa yang kamu butuhkan untuk meningkatkan kualitas belajarmu</p>
+    </div>
+    
+    <div class="modal-features">
+      <a href="halamanTempatEdukatif.php" class="modal-feature-card">
+        <div class="feature-icon" style="background: linear-gradient(135deg, #dbeafe, #bfdbfe);">🗺️</div>
+        <h4>Peta Tempat Edukatif</h4>
+        <p>Temukan tempat belajar nyaman dengan fasilitas lengkap di sekitarmu</p>
+        <span class="feature-link">Jelajahi →</span>
+      </a>
+      
+      <a href="halamanBeasiswa.php" class="modal-feature-card">
+        <div class="feature-icon" style="background: linear-gradient(135deg, #d1fae5, #a7f3d0);">🎓</div>
+        <h4>Info Beasiswa</h4>
+        <p>Raih pendidikan lebih tinggi dengan beasiswa dari berbagai sumber</p>
+        <span class="feature-link">Cari Beasiswa →</span>
+      </a>
+      
+      <a href="halamanLomba.php" class="modal-feature-card">
+        <div class="feature-icon" style="background: linear-gradient(135deg, #fef3c7, #fde68a);">🏆</div>
+        <h4>Info Lomba</h4>
+        <p>Tunjukkan prestasimu di berbagai kompetisi dan lomba bergengsi</p>
+        <span class="feature-link">Lihat Lomba →</span>
+      </a>
+    </div>
+  </div>
+</div>
 
 <footer>
   <p>© 2025 19JutaPendidikan — Kelompok 3 · Dibuat dengan ❤️ untuk pendidikan Indonesia.</p>
@@ -370,11 +564,36 @@ $jmlLomba    = mysqli_fetch_row(mysqli_query($conn, "SELECT COUNT(*) FROM lomba"
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
+  // Fungsi FAQ (yang lama - JANGAN DIHAPUS)
   function toggleFaq(el) {
     const isOpen = el.classList.contains('open');
     document.querySelectorAll('.faq-item').forEach(f => f.classList.remove('open'));
     if (!isOpen) el.classList.add('open');
   }
+  
+  // Fungsi Modal Fitur (yang baru)
+  function openFiturModal() {
+    document.getElementById('fiturModal').classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+  
+  function closeFiturModal() {
+    document.getElementById('fiturModal').classList.remove('active');
+    document.body.style.overflow = '';
+  }
+  
+  function closeFiturModalOutside(event) {
+    if (event.target === document.getElementById('fiturModal')) {
+      closeFiturModal();
+    }
+  }
+  
+  // Tutup modal dengan tombol ESC
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+      closeFiturModal();
+    }
+  });
 </script>
 </body>
 </html>

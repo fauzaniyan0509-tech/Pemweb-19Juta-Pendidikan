@@ -151,7 +151,7 @@ $daftarFitur = mysqli_query($conn, "SELECT * FROM fitur_beranda ORDER BY urutan 
     </div>
     <a href="halamanKelolaFiturBeranda.php" class="menu-item active">🏠 Kelola Fitur Beranda</a>
       <a href="halamanKelolaBlog.php" class="menu-item">📝 Kelola Blog</a>
-    <a href="halamanKelolaTransaksi.php" class="menu-item">💳 Kelola Transaksi</a>
+    <a href="kelolaTransaksi.php" class="menu-item">💳 Kelola Transaksi</a>
 
     <div class="menu-label">Sistem Validasi</div>
     <a href="halamanVerifikasi.php" class="menu-item">✅ Verifikasi Iklan</a>

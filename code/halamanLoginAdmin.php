@@ -31,6 +31,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // Jika cocok, simpan session nama admin dan lempar ke dashboard
         $_SESSION['admin_logged_in'] = true;
         $_SESSION['admin_name'] = $nama_admin;
+        $_SESSION['admin_email'] = $data_admin['email']; 
         
         header("Location: adminDashboard.php"); // <--- Sesuaikan ekstensinya jika dashboard-mu berubah jadi .php
         exit();
